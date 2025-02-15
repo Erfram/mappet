@@ -1650,7 +1650,13 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
         }
     }
 
+    @Override
     public int getAge() {
         return this.entity.ticksExisted;
+    }
+
+    @Override
+    public void setGlowing(boolean glowing) {
+        this.entity.setGlowing(glowing);
     }
 }

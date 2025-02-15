@@ -1553,4 +1553,6 @@ public interface IScriptEntity
     public void clearAllRepeatingCommands();
 
     public int getAge();
+
+    public void setGlowing(boolean glowing);
 }
