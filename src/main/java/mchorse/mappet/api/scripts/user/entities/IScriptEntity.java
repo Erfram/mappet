@@ -352,6 +352,17 @@ public interface IScriptEntity
     public boolean isSneaking();
 
     /**
+     * Set this entity sneaking.
+     *
+     * <pre>{@code
+     *    var subject = c.getSubject();
+     *
+     *    subject.setSneaking(true);
+     * }</pre>
+     */
+    void setSneaking(boolean sneak);
+
+    /**
      * Is this entity is sprinting.
      *
      * <pre>{@code
@@ -364,6 +375,17 @@ public interface IScriptEntity
      * }</pre>
      */
     public boolean isSprinting();
+
+    /**
+     * Set this entity sprinting.
+     *
+     * <pre>{@code
+     *    var subject = c.getSubject();
+     *
+     *    subject.setSprinting(true);
+     * }</pre>
+     */
+    void setSprinting(boolean sprint);
 
     /**
      * Is this entity on the ground.
