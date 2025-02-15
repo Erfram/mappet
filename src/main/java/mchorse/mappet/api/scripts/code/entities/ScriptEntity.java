@@ -375,9 +375,21 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
     }
 
     @Override
+    public void setSneaking(boolean sneak)
+    {
+        this.entity.setSneaking(sneak);
+    }
+
+    @Override
     public boolean isSprinting()
     {
         return this.entity.isSprinting();
+    }
+
+    @Override
+    public void setSprinting(boolean sprint)
+    {
+        this.entity.setSprinting(sprint);
     }
 
     @Override
