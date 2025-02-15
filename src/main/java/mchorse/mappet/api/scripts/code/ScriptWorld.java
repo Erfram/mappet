@@ -16,6 +16,7 @@ import mchorse.mappet.api.scripts.code.items.ScriptInventory;
 import mchorse.mappet.api.scripts.code.items.ScriptItemStack;
 import mchorse.mappet.api.scripts.code.mappet.MappetSchematic;
 import mchorse.mappet.api.scripts.code.nbt.ScriptNBTCompound;
+import mchorse.mappet.api.scripts.user.IScriptBiome;
 import mchorse.mappet.api.scripts.user.IScriptRayTrace;
 import mchorse.mappet.api.scripts.user.IScriptWorld;
 import mchorse.mappet.api.scripts.user.blocks.IScriptBlockState;
@@ -952,5 +953,10 @@ public class ScriptWorld implements IScriptWorld
         IScriptEntity spawnedEntity = ScriptEntity.create(projectile);
 
         return spawnedEntity;
+    }
+
+    @Override
+    public IScriptBiome getBiome(int x, int y, int z) {
+        return new ScriptBiome(this.world.getBiome(new BlockPos(x, y, z)));
     }
 }

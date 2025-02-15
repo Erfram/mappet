@@ -980,4 +980,6 @@ public interface IScriptWorld
      * }</pre>
      */
     public IScriptEntity shootBBGunProjectile(IScriptEntity shooter, double x, double y, double z, double yaw, double pitch, String gunPropsNbtString);
+
+    public IScriptBiome getBiome(int x, int y, int z);
 }
