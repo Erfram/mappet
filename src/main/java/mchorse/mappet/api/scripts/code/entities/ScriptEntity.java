@@ -1661,4 +1661,8 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
             entityLiving.tasks.removeTask(taskToRemove.action);
         }
     }
+
+    public int getAge() {
+        return this.entity.ticksExisted;
+    }
 }

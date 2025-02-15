@@ -1573,4 +1573,6 @@ public interface IScriptEntity
      * }</pre>
      */
     public void clearAllRepeatingCommands();
+
+    public int getAge();
 }
