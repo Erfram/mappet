@@ -4,21 +4,7 @@ import mchorse.mappet.CommonProxy;
 import mchorse.mappet.api.scripts.user.items.IScriptItemStack;
 import mchorse.mappet.api.scripts.user.mappet.IMappetUIBuilder;
 import mchorse.mappet.api.ui.UI;
-import mchorse.mappet.api.ui.components.UIButtonComponent;
-import mchorse.mappet.api.ui.components.UIClickComponent;
-import mchorse.mappet.api.ui.components.UIComponent;
-import mchorse.mappet.api.ui.components.UIGraphicsComponent;
-import mchorse.mappet.api.ui.components.UIIconButtonComponent;
-import mchorse.mappet.api.ui.components.UILabelComponent;
-import mchorse.mappet.api.ui.components.UILayoutComponent;
-import mchorse.mappet.api.ui.components.UIMorphComponent;
-import mchorse.mappet.api.ui.components.UIStackComponent;
-import mchorse.mappet.api.ui.components.UIStringListComponent;
-import mchorse.mappet.api.ui.components.UITextComponent;
-import mchorse.mappet.api.ui.components.UITextareaComponent;
-import mchorse.mappet.api.ui.components.UITextboxComponent;
-import mchorse.mappet.api.ui.components.UIToggleComponent;
-import mchorse.mappet.api.ui.components.UITrackpadComponent;
+import mchorse.mappet.api.ui.components.*;
 import mchorse.mappet.api.ui.utils.LayoutType;
 import mchorse.metamorph.api.morphs.AbstractMorph;
 
@@ -313,5 +299,41 @@ public class MappetUIBuilder implements IMappetUIBuilder
         layout.layoutType = LayoutType.GRID;
 
         return new MappetUIBuilder(layout);
+    }
+
+    public UIScriptEditorComponent scriptEditor(String text) {
+        UIScriptEditorComponent component = new UIScriptEditorComponent();
+
+        this.getCurrent().getChildComponents().add(component);
+        component.label(text);
+
+        return component;
+    }
+
+    public UIScriptEditorComponent scriptEditor() {
+        UIScriptEditorComponent component = new UIScriptEditorComponent();
+
+        this.getCurrent().getChildComponents().add(component);
+        component.label("");
+
+        return component;
+    }
+
+    public UIColorPickerComponent colorPicker(int color) {
+        UIColorPickerComponent component = new UIColorPickerComponent();
+
+        this.getCurrent().getChildComponents().add(component);
+        component.color(color);
+
+        return component;
+    }
+
+    public UIColorPickerComponent colorPicker() {
+        UIColorPickerComponent component = new UIColorPickerComponent();
+
+        this.getCurrent().getChildComponents().add(component);
+        component.color(0x000000);
+
+        return component;
     }
 }

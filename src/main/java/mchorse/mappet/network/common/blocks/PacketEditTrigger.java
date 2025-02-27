@@ -1,14 +1,25 @@
 package mchorse.mappet.network.common.blocks;
 
 import io.netty.buffer.ByteBuf;
+import mchorse.mappet.api.triggers.Trigger;
 import mchorse.mappet.blocks.BlockTrigger;
+import mchorse.mappet.client.gui.GuiTriggerBlockScreen;
 import mchorse.mappet.tile.TileTrigger;
+import mchorse.mappet.utils.WorldUtils;
+import mchorse.mclib.network.ClientMessageHandler;
+import mchorse.mclib.network.ServerMessageHandler;
 import mchorse.mclib.utils.NBTUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketEditTrigger implements IMessage
 {
@@ -70,5 +81,34 @@ public class PacketEditTrigger implements IMessage
         buf.writeDouble(this.boundingBoxPos2.x);
         buf.writeDouble(this.boundingBoxPos2.y);
         buf.writeDouble(this.boundingBoxPos2.z);
+    }
+
+    public static class ClientHandler extends ClientMessageHandler<PacketEditTrigger> {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void run(EntityPlayerSP player, PacketEditTrigger message) {
+            Trigger left = new Trigger();
+            Trigger right = new Trigger();
+
+            left.deserializeNBT(message.left);
+            right.deserializeNBT(message.right);
+
+            Minecraft.getMinecraft().displayGuiScreen(new GuiTriggerBlockScreen(message.pos, left, right, message.collidable, message.boundingBoxPos1, message.boundingBoxPos2));
+        }
+    }
+
+    public static class ServerHandler extends ServerMessageHandler<PacketEditTrigger> {
+        @Override
+        public void run(EntityPlayerMP player, PacketEditTrigger message) {
+            if (!player.isCreative()) {
+                return;
+            }
+
+            TileEntity tile = WorldUtils.getTileEntity(player.world, message.pos);
+
+            if (tile instanceof TileTrigger) {
+                ((TileTrigger) tile).set(message.left, message.right, message.collidable, message.boundingBoxPos1, message.boundingBoxPos2);
+            }
+        }
     }
 }

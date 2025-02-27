@@ -16,12 +16,10 @@ import mchorse.mappet.api.scripts.ScriptManager;
 import mchorse.mappet.api.states.States;
 import mchorse.mappet.api.utils.DataContext;
 import mchorse.mappet.api.utils.logs.MappetLogger;
-import mchorse.mappet.blocks.BlockConditionModel;
-import mchorse.mappet.blocks.BlockEmitter;
-import mchorse.mappet.blocks.BlockRegion;
-import mchorse.mappet.blocks.BlockTrigger;
+import mchorse.mappet.blocks.*;
 import mchorse.mappet.client.gui.GuiMappetDashboard;
 import mchorse.mappet.commands.CommandMappet;
+import mchorse.mappet.common.MappetTab;
 import mchorse.mappet.utils.ScriptUtils;
 import mchorse.mappet.utils.ValueButtons;
 import mchorse.mappet.utils.ValueSyntaxStyle;
@@ -33,7 +31,6 @@ import mchorse.mclib.config.values.ValueInt;
 import mchorse.mclib.events.RegisterConfigEvent;
 import mchorse.mclib.events.RemoveDashboardPanels;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -87,25 +84,7 @@ public final class Mappet
 
     public static MappetLogger logger;
 
-    /* Content */
-    public static Item npcTool;
-
-    public static BlockEmitter emitterBlock;
-
-    public static BlockTrigger triggerBlock;
-
-    public static BlockRegion regionBlock;
-
-    public static BlockConditionModel conditionModelBlock;
-
-    public static CreativeTabs creativeTab = new CreativeTabs(MOD_ID)
-    {
-        @Override
-        public ItemStack getTabIconItem()
-        {
-            return new ItemStack(emitterBlock);
-        }
-    };
+    public static CreativeTabs creativeTab = new MappetTab();
 
     /* Server side data */
     public static ServerSettings settings;

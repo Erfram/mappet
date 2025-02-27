@@ -821,4 +821,42 @@ public interface IScriptPlayer extends IScriptEntity
      * }</pre>
      */
     public void stopScene();
+
+    /**
+     * Inspires the player into the entity. First set the player's gamemode to 3.
+     */
+    public void setSpectating(IScriptEntity entity);
+
+    /**
+     * Checks if this player is sleeping.
+     *
+     * @return true if the player is sleeping, false otherwise
+     */
+    public boolean isSleeping();
+
+    /**
+     * Gets the player's ping time in milliseconds.
+     *
+     * @return the player's ping time
+     */
+    public int getPing();
+
+    /**
+     * Checks if the player is currently eating food.
+     *
+     * @return True if the player is eating, false otherwise
+     */
+    public boolean isEat();
+
+    /**
+     * Checks if the player is drinking a potion.
+     *
+     * @return True if the player is drinking a potion, false otherwise
+     */
+    public boolean isDrink();
+
+    /**
+     * Disconnects this player with the given reason.
+     */
+    public void disconnect(String reason);
 }

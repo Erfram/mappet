@@ -11,7 +11,7 @@ import java.util.List;
  * <pre>{@code
  *    function main(c)
  *    {
- *        if (c.getSubject().isNpc())
+ *        if (c.getSubject().isNPC())
  *        {
  *            // Do something with the NPC...
  *        }

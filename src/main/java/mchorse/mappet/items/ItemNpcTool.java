@@ -162,7 +162,7 @@ public class ItemNpcTool extends Item
             }
         }
 
-        return stack.getItem() == Mappet.npcTool ? EnumActionResult.SUCCESS : super.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+        return stack.getItem() == MappetItems.npcTool ? EnumActionResult.SUCCESS : super.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
     private void setupState(EntityNpc entity, ItemStack stack)

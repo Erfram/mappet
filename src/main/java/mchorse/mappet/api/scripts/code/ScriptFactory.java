@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.vecmath.Vector2d;
@@ -515,5 +516,10 @@ public class ScriptFactory implements IScriptFactory
     @Override
     public String format(String format, Object... args) {
         return String.format(format, args);
+    }
+
+    @Override
+    public boolean isModLoaded(String id) {
+        return Loader.isModLoaded(id);
     }
 }

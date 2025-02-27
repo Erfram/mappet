@@ -357,6 +357,58 @@ mappet.gui.settings.triggers.living_knockback=Living: knockback
 mappet.gui.settings.triggers.descriptions.living_knockback=This cancelable trigger gets triggered when a mob/a player gets knocked back.
 mappet.gui.settings.triggers.variables.living_knockback=§6strength§r, the strength of the knockback (float), §6ratioX§r, the ratio of the knockback on X axis (float), §6ratioZ§r, the ratio of the knockback on Z axis (float).
 
+mappet.gui.settings.triggers.player_eat=Player: eat
+mappet.gui.settings.triggers.descriptions.player_eat=This trigger fires when the player eats food.
+mappet.gui.settings.triggers.variables.player_eat=§7N/A
+
+mappet.gui.settings.triggers.living_jump=Living: jump
+mappet.gui.settings.triggers.descriptions.living_jump=This trigger gets triggered when living entity jump.
+mappet.gui.settings.triggers.variables.living_jump=§7N/A
+
+mappet.gui.settings.triggers.living_fall=Living: fall
+mappet.gui.settings.triggers.descriptions.living_fall=This trigger fires when a living entity falls.
+mappet.gui.settings.triggers.variables.living_fall=§6distance§r, the distance the entity traveled when it fell.\n§6damageMultiplier§r, the damage multiplier of the fall.
+
+mappet.gui.settings.triggers.player_move=Player: move
+mappet.gui.settings.triggers.descriptions.player_move=This trigger gets triggered every tick when a player moving while standing on ground.
+mappet.gui.settings.triggers.variables.player_move=§6onGround§r, true if player on ground, false if not.
+
+mappet.gui.settings.triggers.player_drink_potion=Player: drink potion
+mappet.gui.settings.triggers.descriptions.player_drink_potion=This trigger fires when the player drink potion
+mappet.gui.settings.triggers.variables.player_drink_potion=§7N/A
+
+mappet.gui.settings.triggers.player_dimension_change=Player: change dimension
+mappet.gui.settings.triggers.descriptions.player_dimension_change=This trigger fires when the player changes dimension
+mappet.gui.settings.triggers.variables.player_dimension_change=§6fromDim§r, the ID of the dimension from which the player is traveling\n§6toDim§r, the ID of the dimension to which the player is traveling
+
+mappet.gui.settings.triggers.animal_tame=Animal: tame
+mappet.gui.settings.triggers.descriptions.animal_tame=This trigger fires when the animal has been tamed
+mappet.gui.settings.triggers.variables.animal_tame=§7N/A
+
+mappet.gui.settings.triggers.player_critical_hit=Player: critical hit
+mappet.gui.settings.triggers.descriptions.player_critical_hit=This trigger fires when the player inflicts a critical hit
+mappet.gui.settings.triggers.variables.player_critical_hit=§6damageModifier§r, damage modifier
+
+mappet.gui.settings.triggers.player_item_craft=Player: craft item
+mappet.gui.settings.triggers.descriptions.player_item_craft=This trigger fires when the player crafts an item
+mappet.gui.settings.triggers.variables.player_item_craft=§6stack§r, crafted item\n§6inventory§r, the inventory in which the item was crafted
+
+mappet.gui.settings.triggers.player_item_smelted=Player: smelted item
+mappet.gui.settings.triggers.descriptions.player_item_smelted=This trigger fires when the player smelted an item
+mappet.gui.settings.triggers.variables.player_item_smelted=§6stack§r, smelted item
+
+mappet.gui.settings.triggers.player_keyboard_input=Player: keyboard input
+mappet.gui.settings.triggers.descriptions.player_keyboard_input=This trigger fires when the player keyboard input
+mappet.gui.settings.triggers.variables.player_keyboard_input=§6key§r, id last pressed or released hot key\n§6state§r, true - pressed, false - released
+
+mappet.gui.settings.triggers.player_mouse_input=Player: mouse input
+mappet.gui.settings.triggers.descriptions.player_mouse_input=This trigger fires when the player mouse input
+mappet.gui.settings.triggers.variables.player_mouse_input=§6id§r, id button last pressed or released\n§6state§r, true - pressed, false - released\n§6x§r, mouse position X\n§6y§r, mouse position Y
+
+mappet.gui.settings.triggers.player_open_gui=Player: open gui
+mappet.gui.settings.triggers.descriptions.player_open_gui=This trigger goes off when the player opens any gui
+mappet.gui.settings.triggers.variables.player_open_gui=§6gui§r, gui name
+
 mappet.gui.settings.forge.add=Add custom forge trigger
 mappet.gui.settings.forge.add_from_list=Add forge trigger from event list
 mappet.gui.settings.forge.remove=Remove chosen forge event
@@ -886,7 +938,18 @@ mappet.keys.scripted_item=Open scripted item editor
 itemGroup.mappet=Mappet
 
 item.mappet.npc_tool.name=NPC tool
+item.mappet.npc_tool.april.name=NPC spanner
 item.mappet.npc_tool.tooltip=This tool allows summoning and editing NPCs.
+
+item.mappet.npc_picker.name=NPC picker
+item.mappet.npc_picker.april.name=NPC pepedastar
+item.mappet.npc_picker.tooltip=This tool allows save NPCs.
+item.mappet.npc_picker.message.savednpc=[§6NPC Picker§r] §7NPC is saved under id: §6%s§f
+item.mappet.npc_picker.message.notid=[§6NPC Picker§r] §cNPC doesn't have an id.
+
+item.mappet.npc_soul_stone.name=NPC soul stone
+item.mappet.npc_soul_stone.april.name=NPC dead Souls
+item.mappet.npc_soul_stone.tooltip=This tool allows you to save NPC inside an item.
 
 item.mappet.scripted_item.name=Scripted item
 item.mappet.scripted_item.tooltip=This is an item that can be used to trigger scripts.

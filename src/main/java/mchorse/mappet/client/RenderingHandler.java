@@ -3,6 +3,7 @@ package mchorse.mappet.client;
 import mchorse.mappet.api.huds.HUDStage;
 import mchorse.mappet.client.gui.GuiQuestTracker;
 import mchorse.mappet.client.morphs.WorldMorph;
+import mchorse.mappet.client.renders.NpcPathRenderer;
 import mchorse.mclib.events.RenderOverlayEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -21,6 +22,8 @@ public class RenderingHandler
     public static HUDStage stage = new HUDStage(false);
     public static HUDStage currentStage;
     public static List<WorldMorph> worldMorphs = new ArrayList<WorldMorph>();
+
+    private static final NpcPathRenderer npcPathRenderer = new NpcPathRenderer();
 
     public static void update()
     {
@@ -67,5 +70,14 @@ public class RenderingHandler
 
         Minecraft.getMinecraft().entityRenderer.disableLightmap();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+    }
+
+    @SubscribeEvent
+    public void onRenderWorldLast(RenderWorldLastEvent event) {
+        if (!npcPathRenderer.shouldRenderDebugPath()) {
+            return;
+        }
+
+        npcPathRenderer.renderNpcPaths(event);
     }
 }

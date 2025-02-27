@@ -888,4 +888,9 @@ public interface IScriptFactory
      * @return formatted string
      */
     String format(String format, Object... args);
+
+    /**
+     * Checks if the mod is loaded with the specified ID.
+     */
+    public boolean isModLoaded(String id);
 }

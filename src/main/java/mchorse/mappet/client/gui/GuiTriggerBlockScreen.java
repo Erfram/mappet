@@ -104,7 +104,7 @@ public class GuiTriggerBlockScreen extends GuiBase
 
     public void sanitizeTrackpads(GuiVecPosElement guiVecPosElement)
     {
-        guiVecPosElement.clamp(Vec3d.ZERO, new Vec3d(1, 1, 1));
+        guiVecPosElement.clamp(Vec3d.ZERO, new Vec3d(3, 3, 3));
         guiVecPosElement.x.normal = 0.05;
         guiVecPosElement.x.increment = 0.05;
         guiVecPosElement.y.normal = 0.05;

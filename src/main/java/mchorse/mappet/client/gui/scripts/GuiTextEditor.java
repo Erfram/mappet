@@ -135,6 +135,11 @@ public class GuiTextEditor extends GuiMultiTextElement<HighlightedTextLine>
             return "";
         }
 
+        String line = this.getLines().get(this.cursor.line).text;
+        if (typedChar == '*' && line.charAt(this.cursor.offset - 1) == '/') {
+            return "**/";
+        }
+
         if (typedChar == '(')
         {
             return "()";

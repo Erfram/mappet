@@ -136,9 +136,9 @@ mappet.config.npc.tooltip=Настройки мода, относящиеся к
 
 mappet.config.npc.peaceful_damage=Урон в "мирной"
 mappet.config.comments.npc.peaceful_damage=Эта опция определяет смогут ли NPC наносить урон игрокам, если те находятся в мирном режиме сложности.
-mappet.config.npc.tool_only_op=Инструмент НПС только для Оператора
+mappet.config.npc.tool_only_op=Инструмент NPC только для Оператора
 mappet.config.comments.npc.tool_only_op=Этот параметр определяет, могут ли только операторы использовать инструмент NPC.
-mappet.config.npc.tool_only_creative=Инструмент НПС только для Креатива
+mappet.config.npc.tool_only_creative=Инструмент NPC только для Креатива
 mappet.config.comments.npc.tool_only_creative=Этот параметр определяет, могут ли только игроки в креативе использовать инструмент NPC.
 mappet.config.npc.dashboard_only_creative=Главная панель только для Креатива
 mappet.config.comments.npc.dashboard_only_creative=Этот параметр определяет, могут ли только игроки в креативе открывать главную панель.
@@ -343,6 +343,10 @@ mappet.gui.settings.triggers.living_equipment_change=Живое: при смен
 mappet.gui.settings.triggers.descriptions.living_equipment_change=Этот триггер срабатывает когда живая сущность меняет снаряжение.
 mappet.gui.settings.triggers.variables.living_equipment_change=§6item§r, текущий предмет.\n§6slot§r, слот, откуда был взят предмет.
 
+mappet.gui.settings.triggers.player_entity_leash=Игрок: при привязывании сущности
+mappet.gui.settings.triggers.descriptions.player_entity_leash=Этот отменяемый триггер срабатывает, когда игрок привязывает сущность.
+mappet.gui.settings.triggers.variables.player_entity_leash=§6hand§r, рука, которая привязала сущность (§7main§r или §7off§r).
+
 mappet.gui.settings.triggers.state_changed=Маппет: при смене состояния
 mappet.gui.settings.triggers.descriptions.state_changed=Этот триггер срабатывает когда изменяется состояние.
 mappet.gui.settings.triggers.variables.state_changed=§6entity§r, игрок/NPC у которого меняется состояние.(null если меняется глобальное состояние)\n§6key§r, ID состояния которое изменяется.\n§6current§r, текущее значение состояния.\n§6previous§r, предыдущее значение состояния.
@@ -350,6 +354,58 @@ mappet.gui.settings.triggers.variables.state_changed=§6entity§r, игрок/NP
 mappet.gui.settings.triggers.living_knockback=Живое: при отбрасывании
 mappet.gui.settings.triggers.descriptions.living_knockback=Этот отменяемый триггер срабатывает когда моб/игрок отбрасывается.
 mappet.gui.settings.triggers.variables.living_knockback=§6strength§r, сила отбрасывания (float), §6ratioX§r, коэффициент отбрасывания по оси X (float), §6ratioZ§r, коэффициент отбрасывания по оси Z (float).
+
+mappet.gui.settings.triggers.player_eat=Игрок: при поедании
+mappet.gui.settings.triggers.descriptions.player_eat=Этот триггер срабатывает, когда игрок ест еду.
+mappet.gui.settings.triggers.variables.player_eat=§7N/A
+
+mappet.gui.settings.triggers.living_jump=Живое: при прыжке
+mappet.gui.settings.triggers.descriptions.living_jump=Этот триггер срабатывает когда живая сущность прыгает.
+mappet.gui.settings.triggers.variables.living_jump=§7N/A
+
+mappet.gui.settings.triggers.living_fall=Живое: при падении
+mappet.gui.settings.triggers.descriptions.living_fall=Этот триггер срабатывает когда живая сущность падает.
+mappet.gui.settings.triggers.variables.living_fall=§6distance§r, расстояние, которое пролетела сущность падая.\n§6damageMultiplier§r, множитель урона от падения.
+
+mappet.gui.settings.triggers.player_move=Игрок: при ходьбе
+mappet.gui.settings.triggers.descriptions.player_move=Этот триггер срабатывает каждый тик когда игрок движется.
+mappet.gui.settings.triggers.variables.player_move=§6onGround§r, true если игрок стоит на земле, false если нет.
+
+mappet.gui.settings.triggers.player_drink_potion=Игрок: при питье зелья
+mappet.gui.settings.triggers.descriptions.player_drink_potion=Этот триггер срабатывает, когда игрок выпивает зелье.
+mappet.gui.settings.triggers.variables.player_drink_potion=§7N/A
+
+mappet.gui.settings.triggers.player_dimension_change=Игрок: изменение измерения
+mappet.gui.settings.triggers.descriptions.player_dimension_change=Этот триггер срабатывает, когда игрок меняет измерение
+mappet.gui.settings.triggers.variables.player_dimension_change=§6fromDim§r, ID измерения, из которого игрок перемещается\n§6toDim§r, ID измерения, в которое игрок перемещается
+
+mappet.gui.settings.triggers.animal_tame=Животное: при приручении
+mappet.gui.settings.triggers.descriptions.animal_tame=Этот отменяемый триггер срабатывает, когда животное приручено
+mappet.gui.settings.triggers.variables.animal_tame=§7N/A
+
+mappet.gui.settings.triggers.player_critical_hit=Игрок: при критическом ударе
+mappet.gui.settings.triggers.descriptions.player_critical_hit=Этот триггер срабатывает, когда игрок наносит критический удар
+mappet.gui.settings.triggers.variables.player_critical_hit=§6damageModifier§r, модификатор урона
+
+mappet.gui.settings.triggers.player_item_craft=Игрок: при создании предмета
+mappet.gui.settings.triggers.descriptions.player_item_craft=Этот триггер срабатывает, когда игрок создаёт предмет
+mappet.gui.settings.triggers.variables.player_item_craft=§6stack§r, созданный предмет\n§6inventory§r, инвентарь, в котором был создан предмет
+
+mappet.gui.settings.triggers.player_item_smelted=Игрок: при переплавке предмета
+mappet.gui.settings.triggers.descriptions.player_item_smelted=Этот триггер срабатывает, когда игрок переплавляет предмет
+mappet.gui.settings.triggers.variables.player_item_smelted=§6stack§r, переплавленный предмет
+
+mappet.gui.settings.triggers.player_keyboard_input=Игрок: при использовании клавиатуры
+mappet.gui.settings.triggers.descriptions.player_keyboard_input=Этот триггер срабатывает, когда игрок использует клавиатуру
+mappet.gui.settings.triggers.variables.player_keyboard_input=§6key§r, ID последней нажатой или отпущенной горячей клавиши\n§6state§r, true - нажата, false - отпущена
+
+mappet.gui.settings.triggers.player_mouse_input=Игрок: при использовании мыши
+mappet.gui.settings.triggers.descriptions.player_mouse_input=Этот триггер срабатывает, когда игрок использует мышь
+mappet.gui.settings.triggers.variables.player_mouse_input=§6id§r, ID последней нажатой или отпущенной кнопки\n§6state§r, true - нажата, false - отпущена\n§6x§r, §6y§r - положение мыши
+
+mappet.gui.settings.triggers.player_open_gui=Игрок: при открывании GUI
+mappet.gui.settings.triggers.descriptions.player_open_gui=Этот триггер срабатывает, когда игрок открывает любой GUI
+mappet.gui.settings.triggers.variables.player_open_gui=§6gui§r, название GUI
 
 mappet.gui.settings.forge.add=Добавить произвольный forge триггер
 mappet.gui.settings.forge.add_from_list=Добавить forge триггер из списка событий
@@ -627,7 +683,7 @@ mappet.gui.npcs.respawn.respawn=Возрождается
 mappet.gui.npcs.respawn.respawn_on_coordinates=Возрождается на координатах
 mappet.gui.npcs.respawn.respawn_save_uuid=Возрождается с тем же UUID
 mappet.gui.npcs.respawn.respawn_delay=Задержка
-mappet.gui.npcs.respawn.respawn_trigger=Триггер на возрождении НПС
+mappet.gui.npcs.respawn.respawn_trigger=Триггер на возрождении NPC
 
 mappet.gui.factions.title=Название фракции
 mappet.gui.factions.color=Отображаемый цвет
@@ -872,7 +928,18 @@ mappet.keys.scripted_item=Открыть редактор скриптового
 itemGroup.mappet=Маппет
 
 item.mappet.npc_tool.name=Инструмент NPC
+item.mappet.npc_tool.april.name=NPC ключик
 item.mappet.npc_tool.tooltip=Этот инструмент позволяет призывать и редактировать NPC.
+
+item.mappet.npc_picker.name=NPC пипетка
+item.mappet.npc_picker.april.name=NPC пепедастар
+item.mappet.npc_picker.tooltip=Этот инструмент позволяет сохранять NPC.
+item.mappet.npc_picker.message.savednpc=[§NPC пипетка§r] §7NPC сохранён с id: §6%s§f
+item.mappet.npc_picker.message.notid=[§NPC пипетка§r] §cУ NPC не установлен id.
+
+item.mappet.npc_soul_stone.name=NPC камень души
+item.mappet.npc_soul_stone.april.name=NPC мёртвые души
+item.mappet.npc_soul_stone.tooltip=Этот инструмент позволяет сохранять NPC внутри предмета.
 
 item.mappet.scripted_item.name=Скриптовый предмет
 item.mappet.scripted_item.tooltip=Это предмет который может быть использован чтобы триггерить scripts.mappet.translation.sounds

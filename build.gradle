@@ -64,10 +64,13 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
-    compileOnly files("run/libs/blockbuster-${blockbuster}-${mcversion}-dev.jar")
-    compileOnly files("run/libs/metamorph-${metamorph}-${mcversion}-dev.jar")
-    compileOnly files("run/libs/mclib-${mclib}-${mcversion}-dev.jar")
-    compileOnly files("run/libs/aperture-${aperture}-${mcversion}-dev.jar")
+    implementation files("run/libs/blockbuster-${blockbuster}-${mcversion}-dev.jar")
+    implementation files("run/libs/metamorph-${metamorph}-${mcversion}-dev.jar")
+    implementation files("run/libs/mclib-${mclib}-${mcversion}-dev.jar")
+    implementation files("run/libs/aperture-${aperture}-${mcversion}-dev.jar")
+    implementation files("run/libs/chameleon-${chameleon}-dev.jar")
+    implementation files("run/libs/nashorn.jar")
+
     implementation("org.reflections:reflections:0.10.2")
     implementation("net.minecraftforge:mergetool:0.2.3.3") { force = true }
 
@@ -117,6 +120,7 @@ task processSource(type: Sync) {
             METAMORPH  : metamorph,
             BLOCKBUSTER: blockbuster,
             APERTURE   : aperture,
+            CHAMELEON  : chameleon,
     ])
     into "$buildDir/src"
 }

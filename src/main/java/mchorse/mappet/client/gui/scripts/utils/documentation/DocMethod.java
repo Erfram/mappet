@@ -25,47 +25,51 @@ public class DocMethod extends DocEntry
     }
 
     @Override
-    public void fillIn(Minecraft mc, GuiScrollElement target)
-    {
+    public void fillIn(Minecraft mc, GuiScrollElement target) {
         super.fillIn(mc, target);
 
+        ClassLinkManager linkManager = new ClassLinkManager(mc);
         boolean first = true;
 
-        for (DocParameter parameter : this.arguments)
-        {
+        for (DocParameter parameter : this.arguments) {
             GuiText text = new GuiText(mc).text(TextFormatting.GOLD + parameter.getType() + TextFormatting.RESET + " " + parameter.name);
 
-            if (first)
-            {
+            if (first) {
                 text.marginTop(8);
             }
 
+            // Добавление ссылок в текст
+            String paramText = text.getText().get();
+            linkManager.addLinks(text, linkManager.getEntries(linkManager.parseLinks(paramText)));
+
             target.add(text);
 
-            if (!parameter.doc.isEmpty())
-            {
+            if (!parameter.doc.isEmpty()) {
                 DocEntry.process(parameter.doc, mc, target);
-
                 ((GuiElement) target.getChildren().get(target.getChildren().size() - 1)).marginBottom(8);
             }
 
             first = false;
         }
 
-        target.add(new GuiText(mc).text("Returns " + TextFormatting.GOLD + this.returns.getType()).marginTop(8));
+        GuiText returnText = (GuiText) new GuiText(mc).text("Returns " + TextFormatting.GOLD + this.returns.getType()).marginTop(8);
+
+        String returnTextContent = returnText.getText().get();
+        linkManager.addLinks(returnText, linkManager.getEntries(linkManager.parseLinks(returnTextContent)));
+
+        target.add(returnText);
 
         List<String> annotations = this.annotations.stream()
                 .map(annotation -> "@" + annotation.substring(annotation.lastIndexOf(".") + 1))
                 .filter(annotation -> !annotation.equals("@Override"))
                 .collect(Collectors.toList());
-        if (annotations.size() > 0)
-        {
+
+        if (!annotations.isEmpty()) {
             String annotationsText = String.join(", ", annotations);
             target.add(new GuiText(mc).text(String.valueOf(TextFormatting.GRAY) + TextFormatting.BOLD + annotationsText).marginTop(8));
         }
 
-        if (!this.returns.doc.isEmpty())
-        {
+        if (!this.returns.doc.isEmpty()) {
             DocEntry.process(this.returns.doc, mc, target);
         }
     }

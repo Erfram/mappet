@@ -57,6 +57,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -73,11 +75,8 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -208,7 +207,7 @@ public class EventHandler
 
     public void trigger(Event event, Trigger trigger, DataContext context)
     {
-        context.getValues().put("event", event);
+        context.set("event", event);
 
         trigger.trigger(context);
 
@@ -257,7 +256,7 @@ public class EventHandler
         String name = getEventClassName(event.getClass());
         Trigger trigger = Mappet.settings.registeredForgeTriggers.get(name);
 
-        if (trigger == null || trigger.isEmpty())
+        if (shouldCancelTrigger(trigger))
         {
             return;
         }
@@ -352,8 +351,8 @@ public class EventHandler
 
         DataContext context = new DataContext(event.getEntityLiving(), source.getTrueSource())
                 .set("damage", event.getAmount());
-        context.getValues().put("damageType", source.getDamageType());
-        context.getValues().put("attacker", ScriptEntity.create(attacker));
+        context.set("damageType", source.getDamageType());
+        context.set("attacker", ScriptEntity.create(attacker));
 
         this.trigger(event, Mappet.settings.entityDamaged, context);
     }
@@ -377,7 +376,7 @@ public class EventHandler
 
         DataContext context = new DataContext(event.getEntityLiving(), source.getTrueSource())
                 .set("damage", event.getAmount());
-        context.getValues().put("damageType", source.getDamageType());
+        context.set("damageType", source.getDamageType());
 
         this.trigger(event, Mappet.settings.entityAttacked, context);
     }
@@ -441,7 +440,7 @@ public class EventHandler
 
         if (inventory != null)
         {
-            context.getValues().put("inventory", new ScriptInventory(inventory));
+            context.set("inventory", new ScriptInventory(inventory));
         }
 
         trigger.trigger(context);
@@ -718,8 +717,8 @@ public class EventHandler
         {
             DataContext context = new DataContext(event.getEntityPlayer());
 
-            context.getValues().put("item", ScriptItemStack.create(event.getItem().getItem()));
-            context.getValues().put("entityItem", ScriptEntityItem.create(event.getItem()));
+            context.set("item", ScriptItemStack.create(event.getItem().getItem()));
+            context.set("entityItem", ScriptEntityItem.create(event.getItem()));
             this.trigger(event, Mappet.settings.playerItemPickup, context);
         }
     }
@@ -736,7 +735,7 @@ public class EventHandler
         {
             DataContext context = new DataContext(event.getPlayer());
 
-            context.getValues().put("entityItem", ScriptEntityItem.create(event.getEntityItem()));
+            context.set("entityItem", ScriptEntityItem.create(event.getEntityItem()));
             this.trigger(event, Mappet.settings.playerItemToss, context);
         }
     }
@@ -759,11 +758,11 @@ public class EventHandler
         {
             DataContext context = new DataContext(event.getEntityLiving(), source);
 
-            context.getValues().put("damageType", damageType);
+            context.set("damageType", damageType);
 
             if (source != null)
             {
-                context.getValues().put("killer", ScriptEntity.create(source));
+                context.set("killer", ScriptEntity.create(source));
             }
 
             Entity thrower = null;
@@ -775,7 +774,7 @@ public class EventHandler
 
             if (thrower != null)
             {
-                context.getValues().put("thrower", ScriptEntity.create(thrower));
+                context.set("thrower", ScriptEntity.create(thrower));
             }
 
             this.trigger(event, trigger, context);
@@ -1086,7 +1085,7 @@ public class EventHandler
                 this.context = new DataContext(player);
 
                 setStateChangedEventValues(context, event);
-                context.getValues().put("entity", ScriptEntity.create(player));
+                context.set("entity", ScriptEntity.create(player));
                 trigger.trigger(context);
             }
         }
@@ -1101,7 +1100,7 @@ public class EventHandler
                 this.context = new DataContext(npc);
 
                 setStateChangedEventValues(context, event);
-                context.getValues().put("entity", ScriptEntity.create(npc));
+                context.set("entity", ScriptEntity.create(npc));
                 trigger.trigger(context);
             }
         }
@@ -1109,9 +1108,9 @@ public class EventHandler
 
     private void setStateChangedEventValues(DataContext context, StateChangedEvent event)
     {
-        context.getValues().put("key", event.key);
-        context.getValues().put("current", event.current);
-        context.getValues().put("previous", event.previous);
+        context.set("key", event.key);
+        context.set("current", event.current);
+        context.set("previous", event.previous);
     }
 
     private List<EntityNpc> getAllNpcs()
@@ -1162,7 +1161,7 @@ public class EventHandler
                 .set("strength", event.getStrength())
                 .set("ratioX", event.getRatioX())
                 .set("ratioZ", event.getRatioZ());
-        context.getValues().put("attacker", ScriptEntity.create(attacker));
+        context.set("attacker", ScriptEntity.create(attacker));
 
         this.trigger(event, Mappet.settings.livingKnockBack, context);
     }
@@ -1247,12 +1246,12 @@ public class EventHandler
             EntityPlayer player = Minecraft.getMinecraft().player;
 
             if (
-                player.isRiding() &&
-                player.getRidingEntity() instanceof EntityNpc && 
-                ((EntityNpc) player.getRidingEntity()).getState().canBeSteered.get()
+                    player.isRiding() &&
+                            player.getRidingEntity() instanceof EntityNpc &&
+                            ((EntityNpc) player.getRidingEntity()).getState().canBeSteered.get()
             ) {
                 float jumpPower = ((EntityNpc) player.getRidingEntity()).getState().jumpPower.get();
-              
+
                 Dispatcher.sendToServer(new PacketNpcJump(player.getRidingEntity().getEntityId(), jumpPower));
             }
         }
@@ -1282,5 +1281,277 @@ public class EventHandler
                 .set("hand", event.getHand() == EnumHand.MAIN_HAND ? "main" : "off");
 
         this.trigger(event, Mappet.settings.playerEntityLeash, context);
+    }
+
+    @SubscribeEvent
+    public void onPlayerWalking(TickEvent.PlayerTickEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        if (event.phase == TickEvent.Phase.END) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerMove;
+
+        EntityPlayer player = event.player;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        if (player.prevDistanceWalkedModified - player.distanceWalkedModified == 0) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+        context.set("onGround", player.onGround);
+
+        this.trigger(event, trigger, context);
+    }
+
+    @SubscribeEvent
+    public void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.livingJumping;
+
+        EntityLivingBase entity = event.getEntityLiving();
+
+        if (shouldCancelTrigger(trigger) || entity.world.isRemote) {
+            return;
+        }
+
+        this.trigger(event, trigger, new DataContext(entity));
+    }
+
+    @SubscribeEvent
+    public void onLivingFallEvent(LivingFallEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+        Trigger trigger = Mappet.settings.livingFalling;
+
+        EntityLivingBase entity = event.getEntityLiving();
+
+        if (shouldCancelTrigger(trigger) || entity.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(entity);
+        context.set("distance", event.getDistance());
+        context.set("damageMultiplier", event.getDamageMultiplier());
+
+        this.trigger(event, trigger, context);
+    }
+
+
+    public void onPlayerOpenOrCloseGui(EntityPlayer player, String gui) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerOpenGui;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+
+        context.set("gui", gui);
+
+        trigger.trigger(context);
+    }
+
+    @SubscribeEvent
+    public void onPlayerEatEvent(TickEvent.PlayerTickEvent event){
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerEat;
+
+        EntityPlayer player = event.player;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        boolean isEat = player.getItemInUseCount() > 0 && player.getActiveItemStack().getItem() instanceof ItemFood;
+
+        if(!isEat){
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+
+        this.trigger(event, trigger, context);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDrinkPotionEvent(TickEvent.PlayerTickEvent event){
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerDrinkPotion;
+
+        EntityPlayer player = event.player;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        boolean isDrink = player.getItemInUseCount() > 0 && player.getActiveItemStack().getItem() instanceof ItemPotion;
+
+        if(!isDrink){
+            return;
+        }
+
+        this.trigger(event, trigger, new DataContext(player));
+    }
+
+    @SubscribeEvent
+    public void onDimensionChangeEvent(PlayerEvent.PlayerChangedDimensionEvent event){
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerDimensionChange;
+
+        EntityPlayer player = event.player;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+        context.set("fromDim", event.fromDim);
+        context.set("toDim", event.toDim);
+
+        this.trigger(event, trigger, context);
+    }
+
+    @SubscribeEvent
+    public void onPlayerItemCraft(PlayerEvent.ItemCraftedEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerItemCraft;
+
+        EntityPlayer player = event.player;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+        context.set("stack", ScriptItemStack.create(event.crafting));
+        context.set("inventory", new ScriptInventory(event.craftMatrix));
+        this.trigger(event, trigger, context);
+    }
+
+    @SubscribeEvent
+    public void onPlayerItemSmelted(PlayerEvent.ItemSmeltedEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerItemSmelted;
+
+        EntityPlayer player = event.player;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+        context.set("stack", ScriptItemStack.create(event.smelting));
+
+        this.trigger(event, trigger, context);
+    }
+
+    @SubscribeEvent
+    public void onPlayerCriticalHit(CriticalHitEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerCriticalHit;
+
+        EntityPlayer player = event.getEntityPlayer();
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player, event.getTarget());
+        context.set("damageModifier", event.getDamageModifier());
+
+        this.trigger(event, trigger, context);
+    }
+
+    @SubscribeEvent
+    public void onAnimalTame(AnimalTameEvent event) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.animalTame;
+
+        EntityPlayer player = event.getTamer();
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player, event.getAnimal());
+
+        this.trigger(event, trigger, context);
+    }
+
+    public void onKeyboardInput(EntityPlayerMP player, int key, boolean state) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerKeyboardInput;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+        context.set("key", key);
+        context.set("state", state);
+        trigger.trigger(context);
+    }
+
+    public void onMouseInput(EntityPlayerMP player, int buttonId, int x, int y, boolean state) {
+        if (Mappet.settings == null) {
+            return;
+        }
+
+        Trigger trigger = Mappet.settings.playerMouseInput;
+
+        if (shouldCancelTrigger(trigger) || player.world.isRemote) {
+            return;
+        }
+
+        DataContext context = new DataContext(player);
+        context.set("id", buttonId);
+        context.set("state", state);
+        context.set("x", x);
+        context.set("y", y);
+        trigger.trigger(context);
+    }
+
+    private boolean shouldCancelTrigger(Trigger trigger) {
+        return trigger == null || trigger.isEmpty();
     }
 }

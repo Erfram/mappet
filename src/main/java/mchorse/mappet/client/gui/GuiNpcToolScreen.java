@@ -1,6 +1,7 @@
 package mchorse.mappet.client.gui;
 
 import mchorse.mappet.Mappet;
+import mchorse.mappet.items.MappetItems;
 import mchorse.mappet.network.Dispatcher;
 import mchorse.mappet.network.common.npc.PacketNpcList;
 import mchorse.mappet.network.common.npc.PacketNpcTool;
@@ -37,7 +38,7 @@ public class GuiNpcToolScreen extends GuiBase
         /* Setting up */
         ItemStack stack = mc.player.getHeldItemMainhand();
 
-        if (stack.getItem() != Mappet.npcTool)
+        if (stack.getItem() != MappetItems.npcTool)
         {
             stack = mc.player.getHeldItemOffhand();
         }

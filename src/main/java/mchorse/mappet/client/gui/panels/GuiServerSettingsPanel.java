@@ -7,6 +7,7 @@ import mchorse.mappet.api.states.States;
 import mchorse.mappet.api.triggers.Trigger;
 import mchorse.mappet.client.gui.GuiMappetDashboard;
 import mchorse.mappet.client.gui.events.GuiTriggerHotkeysOverlayPanel;
+import mchorse.mappet.client.gui.scripts.GuiTextEditor;
 import mchorse.mappet.client.gui.states.GuiStatesEditor;
 import mchorse.mappet.client.gui.triggers.GuiTriggerElement;
 import mchorse.mappet.client.gui.utils.overlays.GuiOverlay;
@@ -22,6 +23,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.context.GuiSimpleContextMenu;
+import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiLabelListElement;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiModal;
 import mchorse.mclib.client.gui.framework.elements.modals.GuiPromptModal;
@@ -37,6 +39,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,7 +56,10 @@ public class GuiServerSettingsPanel extends GuiDashboardPanel<GuiMappetDashboard
 
     public GuiIconElement statesAdd;
 
+    public GuiTextElement searchTrigger;
+
     public GuiLabelListElement<String> triggers;
+    public List<Label<String>> triggersList;
 
     public GuiTriggerElement trigger;
 
@@ -101,12 +107,22 @@ public class GuiServerSettingsPanel extends GuiDashboardPanel<GuiMappetDashboard
         this.globalTriggersLayout.flex().relative(this).wh(0.5F, 0.5F);
 
         this.triggers = new GuiLabelListElement<String>(mc, (l) -> this.fillTrigger(l.get(0), false));
-        this.triggers.background().flex().relative(this).x(0.5F, 10).y(35).w(0.5F, -20).h(246);
+        this.triggers.background().flex().relative(this).x(0.5F, 10).y(65).w(0.5F, -20).h(246);
+
+        this.triggersList = this.triggers.getList();
+
+        this.searchTrigger = new GuiTextElement(mc, (trigger) -> {
+            this.triggers.setList(this.triggersList.stream()
+                    .filter(label -> label.title.get().toLowerCase().contains(trigger.toLowerCase()))
+                    .collect(Collectors.toList()));
+        });
+
+        this.searchTrigger.background(true).flex().relative(this).x(0.5F, 10).y(35).w(0.5f, -20).h(20);
 
         this.trigger = new GuiTriggerElement(mc).onClose(this::updateCurrentTrigger);
         this.trigger.flex().relative(this).x(1F, -10).y(1F, -10).wh(120, 20).anchor(1F, 1F);
         this.editor = new GuiScrollElement(mc);
-        this.editor.flex().relative(this).x(0.5F).y(281).w(0.5F).h(1F, -311).column(5).scroll().stretch().padding(10);
+        this.editor.flex().relative(this).x(0.5F).y(310).w(0.5F).h(1F, -311).column(5).scroll().stretch().padding(10);
 
         GuiLabel triggersLabel = Elements.label(IKey.lang("mappet.gui.settings.title")).anchor(0, 0.5F).background();
 
@@ -147,9 +163,8 @@ public class GuiServerSettingsPanel extends GuiDashboardPanel<GuiMappetDashboard
         this.layoutToggleIcon.disabledColor(0xFF880000);
         this.layoutToggleIcon.flex().relative(this).x(1F, -48).y(20).wh(20, 20).anchor(0.5F, 0.5F);
 
-
         this.states.add(this.statesTitle, this.statesSwitch, this.statesAdd, this.statesEditor);
-        this.globalTriggersLayout.add(this.triggers, this.editor, this.trigger, triggersLabel);
+        this.globalTriggersLayout.add(this.triggers, this.editor,  this.searchTrigger, this.trigger, triggersLabel);
         this.forgeTriggersLayout.add(this.forgeTriggers, this.forgeTrigger, forgeTriggersLabel, forgeAttention);
         this.add(this.states, this.layoutToggleIcon, this.hotkeys, this.globalTriggersLayout, this.forgeTriggersLayout);
     }

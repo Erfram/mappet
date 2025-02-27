@@ -62,6 +62,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class UIStackComponent extends UIComponent
 {
     public ItemStack stack = ItemStack.EMPTY;
+    public boolean showCount = true;
+    public boolean showSearch = true;
 
     /**
      * Set item stack component's item from scripts.
@@ -95,6 +97,28 @@ public class UIStackComponent extends UIComponent
         return this;
     }
 
+    /**
+     * Determines whether to show the trackpad with the number of items setting.
+     */
+    public UIStackComponent count(boolean flag)
+    {
+        this.change("ShowCount");
+        this.showCount = flag;
+
+        return this;
+    }
+
+    /**
+     * Determines whether to show the search button.
+     */
+    public UIStackComponent search(boolean flag)
+    {
+        this.change("ShowSearch");
+        this.showSearch = flag;
+
+        return this;
+    }
+
     @Override
     @DiscardMethod
     protected int getDefaultUpdateDelay()
@@ -113,6 +137,14 @@ public class UIStackComponent extends UIComponent
         {
             ((GuiSlotElement) element).setStack(this.stack);
         }
+
+        if (key.equals("ShowCount")) {
+            ((GuiSlotElement) element).inventory.count.setVisible(showCount);
+        }
+
+        if (key.equals("ShowSearch")) {
+            ((GuiSlotElement) element).inventory.toggle.setVisible(showSearch);
+        }
     }
 
     @Override
@@ -127,10 +159,14 @@ public class UIStackComponent extends UIComponent
         {
             context.data.setTag(this.id, stack.serializeNBT());
             context.data.setInteger(this.id + ".slot", element.lastSlot);
+            context.data.setBoolean(this.id + ".count", element.inventory.count.isVisible());
+            context.data.setBoolean(this.id + ".search", element.inventory.search.isVisible());
             context.dirty(this.id, this.updateDelay);
         };
         element.setStack(this.stack);
         element.drawDisabled = false;
+        element.inventory.count.setVisible(this.showCount);
+        element.inventory.toggle.setVisible(this.showSearch);
 
         return this.apply(element, context);
     }
@@ -144,6 +180,8 @@ public class UIStackComponent extends UIComponent
         if (!this.id.isEmpty())
         {
             tag.setTag(this.id, this.stack.serializeNBT());
+//            tag.setBoolean(this.id, this.showSearch);
+//            tag.setBoolean(this.id, this.showCount);
         }
     }
 
@@ -154,6 +192,8 @@ public class UIStackComponent extends UIComponent
         super.serializeNBT(tag);
 
         tag.setTag("Stack", this.stack.serializeNBT());
+        tag.setBoolean("ShowCount", this.showCount);
+        tag.setBoolean("ShowSearch", this.showSearch);
     }
 
     @Override
@@ -165,6 +205,16 @@ public class UIStackComponent extends UIComponent
         if (tag.hasKey("Stack"))
         {
             this.stack = new ItemStack(tag.getCompoundTag("Stack"));
+        }
+
+        if (tag.hasKey("ShowCount"))
+        {
+            this.showCount = tag.getBoolean("ShowCount");
+        }
+
+        if (tag.hasKey("ShowSearch"))
+        {
+            this.showSearch = tag.getBoolean("ShowSearch");
         }
     }
 }

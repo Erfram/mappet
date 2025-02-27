@@ -1,6 +1,7 @@
 package mchorse.mappet.api.scripts.user.entities;
 
 import mchorse.mappet.api.scripts.code.entities.ScriptEntityItem;
+import mchorse.mappet.api.scripts.code.entities.ScriptPlayer;
 import mchorse.mappet.api.scripts.code.items.ScriptItemStack;
 import mchorse.mappet.api.scripts.user.IScriptFactory;
 import mchorse.mappet.api.scripts.user.IScriptRayTrace;
@@ -14,6 +15,7 @@ import mchorse.metamorph.api.morphs.AbstractMorph;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potion;
 
+import javax.script.ScriptException;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ import java.util.List;
  *         {
  *             // Do something with the player...
  *         }
- *         if (c.getSubject().isNpc())
+ *         if (c.getSubject().isNPC())
  *         {
  *             // Do something with the NPC...
  *         }
@@ -119,7 +121,7 @@ public interface IScriptEntity
      *
      * @param dimension The dimension to teleport the entity to.
      */
-    public void setDimension(int dimension);
+    public void setDimension(int dimension) throws ScriptException;
 
     /**
      * Get entity's motion.
@@ -718,12 +720,6 @@ public interface IScriptEntity
      * Check whether this entity is a player.
      */
     public boolean isPlayer();
-
-    /**
-     * Check whether this entity is an NPC.
-     */
-    @Deprecated
-    public boolean isNpc();
 
     /**
      * Check whether this entity is an NPC.
@@ -1574,7 +1570,174 @@ public interface IScriptEntity
      */
     public void clearAllRepeatingCommands();
 
+
+    /**
+     * Gets the age of this entity in ticks.
+     */
     public int getAge();
 
+    /**
+     * Sets whether this entity is glowing or not.
+     *
+     * @param glowing True to make this entity glow, false to stop glowing
+     */
     public void setGlowing(boolean glowing);
+
+    /**
+     * Checks if this entity is glowing.
+     *
+     * @return True if glowing, false otherwise
+     */
+    public boolean isGlowing();
+
+    /**
+     * Checks if this entity is being spectated by the given player.
+     *
+     * @param player The player to check
+     * @return True if being spectated by the player, false otherwise
+     */
+    public boolean isSpectated(ScriptPlayer player);
+
+    /**
+     * Rotates this entity over the given duration to the target pitch, yaw and yawHead using the given interpolation.
+     *
+     * @param interpolation Interpolation method
+     * @param durationTicks Duration in ticks
+     * @param pitch Target pitch
+     * @param yaw Target yaw
+     * @param yawHead Target yaw of the head
+     */
+    public void rotateTo(String interpolation, int durationTicks, float pitch, float yaw, float yawHead);
+
+    /**
+     * Make this entity jump.
+     */
+    public void jump();
+
+    /**
+     * Check if this entity is a child.
+     */
+    public boolean isChild();
+
+    /**
+     * Check if this entity is dead.
+     */
+    public boolean isDead();
+
+    /**
+     * Check if this entity is silent.
+     */
+    public boolean isSilent();
+
+    /**
+     * Set whether this entity is silent.
+     *
+     * @param silent True to make silent, false otherwise
+     */
+    public void setSilent(boolean silent);
+
+    /**
+     * Check if this entity is attacked.
+     */
+    public boolean isAttacked();
+
+    /**
+     * Check if this entity is alive.
+     *
+     * @return True if alive, false if dead
+     */
+    public boolean isAlive();
+
+    /**
+     * Check if this entity is undead.
+     *
+     * @return True if undead, false otherwise
+     */
+    public boolean isUndead();
+
+    /**
+     * Get the AI move speed for this living entity.
+     *
+     * @return The AI move speed
+     */
+    public float getAIMoveSpeed();
+
+    /**
+     * Set the AI move speed for this living entity.
+     *
+     * @param speed The move speed to set
+     */
+    public void setAIMoveSpeed(float speed);
+
+    /**
+     * Set whether this entity can clip through blocks.
+     *
+     * @param clip True if it can clip, false otherwise
+     */
+    public void setNoClip(boolean clip);
+
+    /**
+     * Get whether this entity can clip through blocks.
+     *
+     * @return True if it can clip, false otherwise
+     */
+    public boolean getNoClip();
+
+    /**
+     * Damage this entity on type.
+     *
+     * types:
+     * IN_FIRE,
+     * LIGHTNING_BOLT,
+     * ON_FIRE,
+     * LAVA,
+     * HOT_FLOOR,
+     * IN_WALL,
+     * CRAMMING,
+     * DROWN,
+     * STARVE,
+     * CACTUS,
+     * FALL,
+     * FLY_INTO_WALL,
+     * OUT_OF_WORLD,
+     * GENERIC,
+     * MAGIC,
+     * WITHER,
+     * ANVIL,
+     * FALLING_BLOCK,
+     * DRAGON_BREATH,
+     * FIREWORKS
+     *
+     * @param health Amount of damage
+     * @param damageType Type of damage
+     */
+    public void damage(float health, String damageType);
+
+    /**
+     * Gets the horizontal facing direction this entity is facing as name.
+     */
+    public String getFacing();
+
+    /**
+     * Checks if this entity is currently walking.
+     */
+    public boolean isWalking();
+
+    /**
+     * Get the entity world ID.
+     */
+    public int getEntityWorldId();
+
+    /**
+     * Play an animation on this entity, if it is an entity that can apply morphs, and it's morph is a Chameleon.
+     *
+     * <pre>{@code
+     *     function main(c) {
+     *         c.getSubject().playAnimation("running");
+     *     }
+     * }</pre>
+     *
+     * @param animation name of animation
+     */
+    public void playAnimation(String animation);
 }

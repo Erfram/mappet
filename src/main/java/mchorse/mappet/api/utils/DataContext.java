@@ -112,7 +112,21 @@ public class DataContext
         return this;
     }
 
+    public DataContext set(String key, boolean value)
+    {
+        this.values.put(key, value);
+
+        return this;
+    }
+
     public DataContext set(String key, String value)
+    {
+        this.values.put(key, value);
+
+        return this;
+    }
+
+    public DataContext set(String key, Object value)
     {
         this.values.put(key, value);
 

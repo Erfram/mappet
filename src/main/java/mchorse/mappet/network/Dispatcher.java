@@ -1,24 +1,16 @@
 package mchorse.mappet.network;
 
 import mchorse.mappet.Mappet;
-import mchorse.mappet.network.client.blocks.ClientHandlerEditConditionModel;
-import mchorse.mappet.network.client.blocks.ClientHandlerEditEmitter;
-import mchorse.mappet.network.client.blocks.ClientHandlerEditRegion;
-import mchorse.mappet.network.client.blocks.ClientHandlerEditTrigger;
 import mchorse.mappet.network.client.content.ClientHandlerContentData;
 import mchorse.mappet.network.client.content.ClientHandlerContentNames;
 import mchorse.mappet.network.client.content.ClientHandlerServerSettings;
 import mchorse.mappet.network.client.content.ClientHandlerStates;
-import mchorse.mappet.network.client.crafting.ClientHandlerCraft;
-import mchorse.mappet.network.client.crafting.ClientHandlerCraftingTable;
-import mchorse.mappet.network.client.dialogue.ClientHandlerDialogueFragment;
+import mchorse.mappet.network.client.dialogue.PacketDialogueFragment;
 import mchorse.mappet.network.client.events.ClientHandlerEventPlayerHotkeys;
 import mchorse.mappet.network.client.events.ClientHandlerPlayerJournal;
 import mchorse.mappet.network.client.factions.ClientHandlerFactions;
 import mchorse.mappet.network.client.huds.ClientHandlerHUDMorph;
 import mchorse.mappet.network.client.huds.ClientHandlerHUDScene;
-import mchorse.mappet.network.client.items.ClientHandlerScriptedItemInfo;
-import mchorse.mappet.network.client.logs.ClientHandlerLogs;
 import mchorse.mappet.network.client.npc.ClientHandlerNpcList;
 import mchorse.mappet.network.client.npc.ClientHandlerNpcState;
 import mchorse.mappet.network.client.npc.ClientHandlerNpcStateChange;
@@ -31,7 +23,6 @@ import mchorse.mappet.network.client.scripts.ClientHandlerWorldMorph;
 import mchorse.mappet.network.client.ui.ClientHandlerCloseUI;
 import mchorse.mappet.network.client.ui.ClientHandlerUI;
 import mchorse.mappet.network.client.ui.ClientHandlerUIData;
-import mchorse.mappet.network.client.utils.ClientHandlerChangedBoundingBox;
 import mchorse.mappet.network.common.blocks.PacketEditConditionModel;
 import mchorse.mappet.network.common.blocks.PacketEditEmitter;
 import mchorse.mappet.network.common.blocks.PacketEditRegion;
@@ -40,17 +31,16 @@ import mchorse.mappet.network.common.content.PacketContentData;
 import mchorse.mappet.network.common.content.PacketContentExit;
 import mchorse.mappet.network.common.content.PacketContentFolder;
 import mchorse.mappet.network.common.content.PacketContentNames;
-import mchorse.mappet.network.common.content.PacketContentRequestData;
-import mchorse.mappet.network.common.content.PacketContentRequestNames;
+import mchorse.mappet.network.server.content.PacketContentRequestData;
+import mchorse.mappet.network.server.content.PacketContentRequestNames;
 import mchorse.mappet.network.common.content.PacketRequestServerSettings;
 import mchorse.mappet.network.common.content.PacketRequestStates;
 import mchorse.mappet.network.common.content.PacketServerSettings;
 import mchorse.mappet.network.common.content.PacketStates;
 import mchorse.mappet.network.common.crafting.PacketCraft;
 import mchorse.mappet.network.common.crafting.PacketCraftingTable;
-import mchorse.mappet.network.common.dialogue.PacketDialogueFragment;
-import mchorse.mappet.network.common.dialogue.PacketFinishDialogue;
-import mchorse.mappet.network.common.dialogue.PacketPickReply;
+import mchorse.mappet.network.server.dialogue.PacketFinishDialogue;
+import mchorse.mappet.network.server.dialogue.PacketPickReply;
 import mchorse.mappet.network.common.events.PacketEventHotkey;
 import mchorse.mappet.network.common.events.PacketEventHotkeys;
 import mchorse.mappet.network.common.events.PacketPlayerJournal;
@@ -59,8 +49,9 @@ import mchorse.mappet.network.common.factions.PacketRequestFactions;
 import mchorse.mappet.network.common.huds.PacketHUDMorph;
 import mchorse.mappet.network.common.huds.PacketHUDScene;
 import mchorse.mappet.network.common.items.PacketScriptedItemInfo;
-import mchorse.mappet.network.common.logs.PacketLogs;
-import mchorse.mappet.network.common.logs.PacketRequestLogs;
+import mchorse.mappet.network.server.events.*;
+import mchorse.mappet.network.server.logs.PacketLogs;
+import mchorse.mappet.network.client.logs.PacketRequestLogs;
 import mchorse.mappet.network.common.npc.PacketNpcJump;
 import mchorse.mappet.network.common.npc.PacketNpcList;
 import mchorse.mappet.network.common.npc.PacketNpcState;
@@ -78,29 +69,15 @@ import mchorse.mappet.network.common.scripts.PacketWorldMorph;
 import mchorse.mappet.network.common.ui.PacketCloseUI;
 import mchorse.mappet.network.common.ui.PacketUI;
 import mchorse.mappet.network.common.ui.PacketUIData;
-import mchorse.mappet.network.common.utils.PacketChangedBoundingBox;
-import mchorse.mappet.network.server.blocks.ServerHandlerEditConditionModel;
-import mchorse.mappet.network.server.blocks.ServerHandlerEditEmitter;
-import mchorse.mappet.network.server.blocks.ServerHandlerEditRegion;
-import mchorse.mappet.network.server.blocks.ServerHandlerEditTrigger;
+import mchorse.mappet.network.client.utils.PacketChangedBoundingBox;
 import mchorse.mappet.network.server.content.ServerHandlerContentData;
 import mchorse.mappet.network.server.content.ServerHandlerContentExit;
 import mchorse.mappet.network.server.content.ServerHandlerContentFolder;
-import mchorse.mappet.network.server.content.ServerHandlerContentRequestData;
-import mchorse.mappet.network.server.content.ServerHandlerContentRequestNames;
 import mchorse.mappet.network.server.content.ServerHandlerRequestServerSettings;
 import mchorse.mappet.network.server.content.ServerHandlerRequestStates;
 import mchorse.mappet.network.server.content.ServerHandlerServerSettings;
 import mchorse.mappet.network.server.content.ServerHandlerStates;
-import mchorse.mappet.network.server.crafting.ServerHandlerCraft;
-import mchorse.mappet.network.server.crafting.ServerHandlerCraftingTable;
-import mchorse.mappet.network.server.dialogue.ServerHandlerFinishDialogue;
-import mchorse.mappet.network.server.dialogue.ServerHandlerPickReply;
-import mchorse.mappet.network.server.events.ServerHandlerEventHotkey;
-import mchorse.mappet.network.server.events.ServerHandlerPlayerJournal;
 import mchorse.mappet.network.server.factions.ServerHandlerRequestFactions;
-import mchorse.mappet.network.server.items.ServerHandlerScriptedItemInfo;
-import mchorse.mappet.network.server.logs.ServerHandlerLogs;
 import mchorse.mappet.network.server.npc.ServerHandlerNpcJump;
 import mchorse.mappet.network.server.npc.ServerHandlerNpcList;
 import mchorse.mappet.network.server.npc.ServerHandlerNpcState;
@@ -131,36 +108,41 @@ public class Dispatcher
         public void register()
         {
             /* Crafting table */
-            this.register(PacketCraftingTable.class, ClientHandlerCraftingTable.class, Side.CLIENT);
-            this.register(PacketCraftingTable.class, ServerHandlerCraftingTable.class, Side.SERVER);
-            this.register(PacketCraft.class, ClientHandlerCraft.class, Side.CLIENT);
-            this.register(PacketCraft.class, ServerHandlerCraft.class, Side.SERVER);
+            this.register(PacketCraftingTable.class, PacketCraftingTable.ClientHandler.class, Side.CLIENT);
+            this.register(PacketCraftingTable.class, PacketCraftingTable.ServerHandler.class, Side.SERVER);
+            this.register(PacketCraft.class, PacketCraft.ClientHandler.class, Side.CLIENT);
+            this.register(PacketCraft.class, PacketCraft.ServerHandler.class, Side.SERVER);
+
+            /* Events */
+            this.register(PacketUpdateGuiEvent.class, PacketUpdateGuiEvent.ServerHandler.class, Side.SERVER);
+            this.register(PacketKeyboardEvent.class, PacketKeyboardEvent.ServerHandler.class, Side.SERVER);
+            this.register(PacketMouseEvent.class, PacketMouseEvent.ServerHandler.class, Side.SERVER);
 
             /* Dialogue */
-            this.register(PacketDialogueFragment.class, ClientHandlerDialogueFragment.class, Side.CLIENT);
-            this.register(PacketPickReply.class, ServerHandlerPickReply.class, Side.SERVER);
-            this.register(PacketFinishDialogue.class, ServerHandlerFinishDialogue.class, Side.SERVER);
+            this.register(PacketDialogueFragment.class, PacketDialogueFragment.ClientHandler.class, Side.CLIENT);
+            this.register(PacketPickReply.class, PacketPickReply.ServerHandler.class, Side.SERVER);
+            this.register(PacketFinishDialogue.class, PacketFinishDialogue.ServerHandler.class, Side.SERVER);
 
             /* Blocks */
-            this.register(PacketEditEmitter.class, ClientHandlerEditEmitter.class, Side.CLIENT);
-            this.register(PacketEditEmitter.class, ServerHandlerEditEmitter.class, Side.SERVER);
+            this.register(PacketEditEmitter.class, PacketEditEmitter.ClientHandler.class, Side.CLIENT);
+            this.register(PacketEditEmitter.class, PacketEditEmitter.ServerHandler.class, Side.SERVER);
 
-            this.register(PacketEditTrigger.class, ClientHandlerEditTrigger.class, Side.CLIENT);
-            this.register(PacketEditTrigger.class, ServerHandlerEditTrigger.class, Side.SERVER);
+            this.register(PacketEditTrigger.class, PacketEditTrigger.ClientHandler.class, Side.CLIENT);
+            this.register(PacketEditTrigger.class, PacketEditTrigger.ServerHandler.class, Side.SERVER);
 
-            this.register(PacketEditRegion.class, ClientHandlerEditRegion.class, Side.CLIENT);
-            this.register(PacketEditRegion.class, ServerHandlerEditRegion.class, Side.SERVER);
+            this.register(PacketEditRegion.class, PacketEditRegion.ClientHandler.class, Side.CLIENT);
+            this.register(PacketEditRegion.class, PacketEditRegion.ServerHandler.class, Side.SERVER);
 
-            this.register(PacketEditConditionModel.class, ClientHandlerEditConditionModel.class, Side.CLIENT);
-            this.register(PacketEditConditionModel.class, ServerHandlerEditConditionModel.class, Side.SERVER);
+            this.register(PacketEditConditionModel.class, PacketEditConditionModel.ClientHandler.class, Side.CLIENT);
+            this.register(PacketEditConditionModel.class, PacketEditConditionModel.ServerHandler.class, Side.SERVER);
 
             /* Scripted item */
-            this.register(PacketScriptedItemInfo.class, ClientHandlerScriptedItemInfo.class, Side.CLIENT);
-            this.register(PacketScriptedItemInfo.class, ServerHandlerScriptedItemInfo.class, Side.SERVER);
+            this.register(PacketScriptedItemInfo.class, PacketScriptedItemInfo.ClientHandler.class, Side.CLIENT);
+            this.register(PacketScriptedItemInfo.class, PacketScriptedItemInfo.ServerHandler.class, Side.SERVER);
 
             /* Creative editing */
-            this.register(PacketContentRequestNames.class, ServerHandlerContentRequestNames.class, Side.SERVER);
-            this.register(PacketContentRequestData.class, ServerHandlerContentRequestData.class, Side.SERVER);
+            this.register(PacketContentRequestNames.class, PacketContentRequestNames.ServerHandler.class, Side.SERVER);
+            this.register(PacketContentRequestData.class, PacketContentRequestData.ServerHandler.class, Side.SERVER);
             this.register(PacketContentData.class, ClientHandlerContentData.class, Side.CLIENT);
             this.register(PacketContentData.class, ServerHandlerContentData.class, Side.SERVER);
             this.register(PacketContentFolder.class, ServerHandlerContentFolder.class, Side.SERVER);
@@ -218,11 +200,11 @@ public class Dispatcher
             this.register(PacketCloseUI.class, ClientHandlerCloseUI.class, Side.CLIENT);
 
             /* Logs */
-            this.register(PacketRequestLogs.class, ServerHandlerLogs.class, Side.SERVER);
-            this.register(PacketLogs.class, ClientHandlerLogs.class, Side.CLIENT);
+            this.register(PacketRequestLogs.class, PacketRequestLogs.ServerHandler.class, Side.SERVER);
+            this.register(PacketLogs.class, PacketLogs.ClientHandler.class, Side.CLIENT);
 
             /* Utils */
-            this.register(PacketChangedBoundingBox.class, ClientHandlerChangedBoundingBox.class, Side.CLIENT);
+            this.register(PacketChangedBoundingBox.class, PacketChangedBoundingBox.ClientHandler.class, Side.CLIENT);
         }
     };
 

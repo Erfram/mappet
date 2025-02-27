@@ -959,4 +959,38 @@ public class ScriptWorld implements IScriptWorld
     public IScriptBiome getBiome(int x, int y, int z) {
         return new ScriptBiome(this.world.getBiome(new BlockPos(x, y, z)));
     }
+
+    @Override
+    public void chunkLoad(int x, int z) {
+        this.world.getChunkFromBlockCoords(this.pos.setPos(x, 0, z)).onLoad();
+    }
+
+    @Override
+    public boolean isChunkLoaded(int x, int z) {
+        if (this.world instanceof WorldServer){
+            return ((WorldServer)this.world).getChunkProvider().chunkExists(x >> 4, z >> 4);
+        }
+
+        return (this.world.getChunkProvider().getLoadedChunk(x >> 4, z >> 4) != null);
+    }
+
+    @Override
+    public int getLight(int x, int y, int z) {
+        return this.world.getLight(new BlockPos(x, y, z));
+    }
+
+    @Override
+    public int getLight(ScriptVector vector) {
+        return this.world.getLight(new BlockPos(vector.x, vector.y, vector.z));
+    }
+
+    @Override
+    public int getLight(int x, int y, int z, boolean checkNeighbors) {
+        return this.world.getLight(new BlockPos(x, y, z), checkNeighbors);
+    }
+
+    @Override
+    public int getLight(ScriptVector vector, boolean checkNeighbors) {
+        return this.world.getLight(new BlockPos(vector.x, vector.y, vector.z), checkNeighbors);
+    }
 }

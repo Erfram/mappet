@@ -2,12 +2,22 @@ package mchorse.mappet.network.common.blocks;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.mappet.api.conditions.Checker;
+import mchorse.mappet.client.gui.GuiEmitterBlockScreen;
 import mchorse.mappet.tile.TileEmitter;
+import mchorse.mappet.utils.WorldUtils;
+import mchorse.mclib.network.ClientMessageHandler;
+import mchorse.mclib.network.ServerMessageHandler;
 import mchorse.mclib.utils.NBTUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketEditEmitter implements IMessage
 {
@@ -63,5 +73,28 @@ public class PacketEditEmitter implements IMessage
         buf.writeFloat(this.radius);
         buf.writeInt(this.update);
         buf.writeBoolean(this.disable);
+    }
+
+    public static class ClientHandler extends ClientMessageHandler<PacketEditEmitter> {
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void run(EntityPlayerSP player, PacketEditEmitter message) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEmitterBlockScreen(message));
+        }
+    }
+
+    public static class ServerHandler extends ServerMessageHandler<PacketEditEmitter> {
+        @Override
+        public void run(EntityPlayerMP player, PacketEditEmitter message) {
+            if (!player.isCreative()) {
+                return;
+            }
+
+            TileEntity tile = WorldUtils.getTileEntity(player.world, message.pos);
+
+            if (tile instanceof TileEmitter) {
+                ((TileEmitter) tile).setExpression(message);
+            }
+        }
     }
 }

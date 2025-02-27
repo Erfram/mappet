@@ -120,6 +120,10 @@ public abstract class DocEntry
                     text.marginTop(12);
                 }
 
+                ClassLinkManager linkManager = new ClassLinkManager(mc);
+
+                linkManager.addLinks(text, linkManager.getEntries(linkManager.parseLinks(line)));
+
                 target.add(text);
             }
 

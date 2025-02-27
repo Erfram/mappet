@@ -34,21 +34,7 @@ import mchorse.mappet.api.triggers.blocks.MorphTriggerBlock;
 import mchorse.mappet.api.triggers.blocks.ScriptTriggerBlock;
 import mchorse.mappet.api.triggers.blocks.SoundTriggerBlock;
 import mchorse.mappet.api.triggers.blocks.StateTriggerBlock;
-import mchorse.mappet.api.ui.components.UIButtonComponent;
-import mchorse.mappet.api.ui.components.UIClickComponent;
-import mchorse.mappet.api.ui.components.UIComponent;
-import mchorse.mappet.api.ui.components.UIGraphicsComponent;
-import mchorse.mappet.api.ui.components.UIIconButtonComponent;
-import mchorse.mappet.api.ui.components.UILabelComponent;
-import mchorse.mappet.api.ui.components.UILayoutComponent;
-import mchorse.mappet.api.ui.components.UIMorphComponent;
-import mchorse.mappet.api.ui.components.UIStackComponent;
-import mchorse.mappet.api.ui.components.UIStringListComponent;
-import mchorse.mappet.api.ui.components.UITextComponent;
-import mchorse.mappet.api.ui.components.UITextareaComponent;
-import mchorse.mappet.api.ui.components.UITextboxComponent;
-import mchorse.mappet.api.ui.components.UIToggleComponent;
-import mchorse.mappet.api.ui.components.UITrackpadComponent;
+import mchorse.mappet.api.ui.components.*;
 import mchorse.mappet.api.utils.factory.IFactory;
 import mchorse.mappet.api.utils.factory.MapFactory;
 import mchorse.mappet.capabilities.character.Character;
@@ -154,7 +140,6 @@ public class CommonProxy
         MPIcons.register();
     }
 
-
     public void postInit(FMLPostInitializationEvent event)
     {
         /* Register event nodes */
@@ -238,7 +223,9 @@ public class CommonProxy
                 .register("item", UIStackComponent.class, 0xffffff)
                 .register("layout", UILayoutComponent.class, 0xffffff)
                 .register("morph", UIMorphComponent.class, 0xffffff)
-                .register("clickarea", UIClickComponent.class, 0xffffff);
+                .register("clickarea", UIClickComponent.class, 0xffffff)
+                .register("colorpicker", UIColorPickerComponent.class, 0xffffff)
+                .register("scripteditor", UIScriptEditorComponent.class, 0xffffff);
 
         uiComponents = ui;
         Mappet.EVENT_BUS.post(new RegisterUIComponentEvent(ui));

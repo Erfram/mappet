@@ -2,21 +2,7 @@ package mchorse.mappet.api.scripts.user.mappet;
 
 import mchorse.mappet.api.scripts.user.entities.IScriptPlayer;
 import mchorse.mappet.api.scripts.user.items.IScriptItemStack;
-import mchorse.mappet.api.ui.components.UIButtonComponent;
-import mchorse.mappet.api.ui.components.UIClickComponent;
-import mchorse.mappet.api.ui.components.UIComponent;
-import mchorse.mappet.api.ui.components.UIGraphicsComponent;
-import mchorse.mappet.api.ui.components.UIIconButtonComponent;
-import mchorse.mappet.api.ui.components.UILabelComponent;
-import mchorse.mappet.api.ui.components.UILayoutComponent;
-import mchorse.mappet.api.ui.components.UIMorphComponent;
-import mchorse.mappet.api.ui.components.UIStackComponent;
-import mchorse.mappet.api.ui.components.UIStringListComponent;
-import mchorse.mappet.api.ui.components.UITextComponent;
-import mchorse.mappet.api.ui.components.UITextareaComponent;
-import mchorse.mappet.api.ui.components.UITextboxComponent;
-import mchorse.mappet.api.ui.components.UIToggleComponent;
-import mchorse.mappet.api.ui.components.UITrackpadComponent;
+import mchorse.mappet.api.ui.components.*;
 import mchorse.metamorph.api.morphs.AbstractMorph;
 
 import java.util.List;
@@ -362,4 +348,64 @@ public interface IMappetUIBuilder
      * <p>Check {@link UILayoutComponent} for description and examples.</p>
      */
     public IMappetUIBuilder grid(int margin, int padding);
+
+    /**
+     * Creates a script editor ui component that supports code highlighting, etc.
+     *
+     * <pre>{@code
+     *     function main(c) {
+     *         const ui = mappet.createUI(c, "handler")
+     *
+     *         ui.scriptEditor('function main(c) {\n    c.send("Hi!")\n}').rwh(0.25, 0.25).rxy(0.5, 0.5).anchor(0.5)
+     *
+     *         c.player.openUI(ui)
+     *     }
+     * }</pre>
+     */
+    public UIScriptEditorComponent scriptEditor(String text);
+
+    /**
+     * Creates a script editor ui component that supports code highlighting, etc.
+     *
+     * <pre>{@code
+     *     function main(c) {
+     *         const ui = mappet.createUI(c, "handler")
+     *
+     *         ui.scriptEditor().rwh(0.25, 0.25).rxy(0.5, 0.5).anchor(0.5)
+     *
+     *         c.player.openUI(ui)
+     *     }
+     * }</pre>
+     */
+    public UIScriptEditorComponent scriptEditor();
+
+    /**
+     * Creates a color picker ui component.
+     *
+     * <pre>{@code
+     *     function main(c) {
+     *         const ui = mappet.createUI(c, "handler")
+     *
+     *         ui.colorPicker(0xffffff).rwh(0.25, 0.25).rxy(0.5, 0.5).anchor(0.5)
+     *
+     *         c.player.openUI(ui)
+     *     }
+     * }</pre>
+     */
+    public UIColorPickerComponent colorPicker(int color);
+
+    /**
+     * Creates a color picker ui component.
+     *
+     * <pre>{@code
+     *     function main(c) {
+     *         const ui = mappet.createUI(c, "handler")
+     *
+     *         ui.colorPicker().rwh(0.25, 0.25).rxy(0.5, 0.5).anchor(0.5)
+     *
+     *         c.player.openUI(ui)
+     *     }
+     * }</pre>
+     */
+    public UIColorPickerComponent colorPicker();
 }

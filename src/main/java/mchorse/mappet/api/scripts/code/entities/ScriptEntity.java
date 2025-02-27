@@ -32,6 +32,7 @@ import mchorse.mappet.client.morphs.WorldMorph;
 import mchorse.mappet.entities.EntityNpc;
 import mchorse.mappet.network.Dispatcher;
 import mchorse.mappet.network.common.scripts.PacketEntityRotations;
+import mchorse.mappet.network.common.scripts.PacketPlayAnimation;
 import mchorse.mappet.network.common.scripts.PacketWorldMorph;
 import mchorse.mappet.utils.EntityUtils;
 import mchorse.mappet.utils.RunnableExecutionFork;
@@ -72,14 +73,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.Optional;
 
 import javax.script.ScriptException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ScriptEntity <T extends Entity> implements IScriptEntity
 {
@@ -157,44 +161,30 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
     }
 
     @Override
-    public void setDimension(int dimension)
-    {
-        // Check if the entity is already in the target dimension.
-        if (this.entity.dimension == dimension)
-        {
-            return;
-        }
+    public void setDimension(int dimension) throws ScriptException {
+        if (this.entity.dimension != dimension) {
+            if (DimensionManager.isDimensionRegistered(dimension)) {
+                MinecraftServer minecraftServer = this.entity.getServer();
+                WorldServer worldServer = minecraftServer.getWorld(dimension);
+                Teleporter teleporter = new Teleporter(worldServer) {
+                    public void placeInPortal(Entity entityIn, float rotationYaw) {
+                    }
 
-        if (dimension < -1 || dimension > 1)
-        {
-            throw new IllegalArgumentException("Dimension must be -1 (Nether), 0 (Overworld), or 1 (End).");
-        }
+                    public boolean placeInExistingPortal(Entity entityIn, float rotationYaw) {
+                        return false;
+                    }
+                };
+                if (this.entity instanceof EntityPlayerMP) {
+                    EntityPlayerMP player = (EntityPlayerMP)this.entity;
+                    minecraftServer.getPlayerList().transferPlayerToDimension(player, dimension, teleporter);
+                } else {
+                    this.entity.changeDimension(dimension, teleporter);
+                }
 
-        MinecraftServer minecraftServer = this.entity.getServer();
-        WorldServer worldServer = minecraftServer.getWorld(dimension);
-
-        // anonymous class to override the Teleporter within the method itself
-        Teleporter teleporter = new Teleporter(worldServer) {
-            @Override
-            public void placeInPortal(Entity entityIn, float rotationYaw) {
-                // This method is intentionally left blank to prevent portal creation.
+            } else {
+                List<Integer> values = DimensionManager.getRegisteredDimensions().values().stream().parallel().flatMapToInt(e -> Arrays.stream(e.toIntArray())).boxed().collect(Collectors.toList());
+                throw new ScriptException("Registered dimensions: " + Arrays.toString(values.toArray()));
             }
-
-            @Override
-            public boolean placeInExistingPortal(Entity entityIn, float rotationYaw) {
-                // We always return false to prevent the game from placing the entity in an existing portal.
-                return false;
-            }
-        };
-
-        if (this.entity instanceof EntityPlayerMP)
-        {
-            EntityPlayerMP player = (EntityPlayerMP) entity;
-            minecraftServer.getPlayerList().transferPlayerToDimension(player, dimension, teleporter);
-        }
-        else
-        {
-            this.entity.changeDimension(dimension, teleporter);
         }
     }
 
@@ -764,12 +754,6 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
         return this.entity instanceof EntityPlayer;
     }
 
-    @Override
-    @Deprecated
-    public boolean isNpc()
-    {
-        return this.isNPC();
-    }
 
     @Override
     public boolean isNPC()
@@ -877,7 +861,7 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
         );
 
         entityItem.setPickupDelay(40);
-        if (this.isNpc())
+        if (this.isNPC())
         {
             entityItem.setThrower(((EntityNpc) this.entity).getId());
         }
@@ -1670,5 +1654,125 @@ public class ScriptEntity <T extends Entity> implements IScriptEntity
     @Override
     public void setGlowing(boolean glowing) {
         this.entity.setGlowing(glowing);
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return this.entity.isGlowing();
+    }
+
+    @Override
+    public boolean isSpectated(ScriptPlayer player) {
+        return this.entity.isSpectatedByPlayer(player.getMinecraftPlayer());
+    }
+
+    @Override
+    public void rotateTo(String interpolation, int durationTicks, float pitch, float yaw, float yawHead) {
+        Interpolation interp = Interpolation.valueOf(interpolation.toUpperCase());
+        float startPitch = this.entity.rotationPitch;
+        float startYaw = this.entity.rotationYaw;
+        float startYawHead = this.entity.getRotationYawHead();
+
+        for (int i = 0; i < durationTicks; i++) {
+            float progress = (float) i / (float) durationTicks;
+            float interpPitch = interp.interpolate(startPitch, pitch, progress);
+            float interpYaw = interp.interpolate(startYaw, yaw, progress);
+            float interpYawHead = interp.interpolate(startYawHead, yawHead, progress);
+
+            CommonProxy.eventHandler.addExecutable(new RunnableExecutionFork(i, () -> this.setRotations(interpPitch, interpYaw, interpYawHead)));
+        }
+    }
+
+    @Override
+    public void jump() {
+        ((EntityLiving) this.entity).getJumpHelper().setJumping();
+    }
+
+    @Override
+    public boolean isChild() {
+        return ((EntityLivingBase) this.entity).isChild();
+    }
+
+    @Override
+    public boolean isDead() {
+        return this.entity.isDead;
+    }
+
+    @Override
+    public boolean isSilent() {
+        return this.entity.isSilent();
+    }
+
+    @Override
+    public void setSilent(boolean silent) {
+        this.entity.setSilent(silent);
+    }
+
+    @Override
+    public boolean isAttacked() {
+        return ((EntityLivingBase) this.entity).attackable();
+    }
+
+    @Override
+    public boolean isAlive() {
+        return this.entity.isEntityAlive();
+    }
+
+    @Override
+    public boolean isUndead() {
+        return ((EntityLivingBase) this.entity).isEntityUndead();
+    }
+
+    @Override
+    public float getAIMoveSpeed() {
+        return ((EntityLivingBase) this.entity).getAIMoveSpeed();
+    }
+
+    @Override
+    public void setAIMoveSpeed(float speed) {
+        ((EntityLivingBase) this.entity).setAIMoveSpeed(speed);
+    }
+
+    @Override
+    public void setNoClip(boolean clip) {
+        this.entity.noClip = clip;
+    }
+
+    @Override
+    public boolean getNoClip() {
+        return this.entity.noClip;
+    }
+
+    @Override
+    public void damage(float health, String damageType) {
+        if (this.entity instanceof EntityLivingBase) {
+            return;
+        }
+
+        this.entity.attackEntityFrom(new DamageSource(damageType.toUpperCase()), health);
+    }
+
+    @Override
+    public String getFacing() {
+        return this.entity.getHorizontalFacing().getName();
+    }
+
+    @Override
+    public boolean isWalking() {
+        return this.entity.prevDistanceWalkedModified - this.entity.distanceWalkedModified != 0;
+    }
+
+    @Override
+    public int getEntityWorldId() {
+        return this.entity.getEntityId();
+    }
+
+    @Override
+    public void playAnimation(String animation) {
+        PacketPlayAnimation packet = new PacketPlayAnimation(animation, this.entity.getUniqueID().toString());
+        Dispatcher.sendToTracked(this.entity, packet);
+        if (this.entity instanceof EntityPlayerMP) {
+            Dispatcher.sendTo(packet, (EntityPlayerMP) this.entity);
+        }
     }
 }

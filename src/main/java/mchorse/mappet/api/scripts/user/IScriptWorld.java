@@ -982,4 +982,52 @@ public interface IScriptWorld
     public IScriptEntity shootBBGunProjectile(IScriptEntity shooter, double x, double y, double z, double yaw, double pitch, String gunPropsNbtString);
 
     public IScriptBiome getBiome(int x, int y, int z);
+
+    /**
+     * Loading chunk in the world
+     */
+    public void chunkLoad(int x, int z);
+
+    /**
+     * Checks if a chunk is loaded.
+     */
+    public boolean isChunkLoaded(int x, int z);
+
+    /**
+     * Gets the light level at the given block coordinates.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @return Light level (0-15)
+     */
+    public int getLight(int x, int y, int z);
+
+    /**
+     * Gets the light level at the given vector coordinates.
+     *
+     * @param vector Coordinate vector
+     * @return Light level (0-15)
+     */
+    public int getLight(ScriptVector vector);
+
+    /**
+     * Gets light level at coordinates, optionally checking neighbors.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @param checkNeighbors If should check neighbor blocks
+     * @return Light level (0-15)
+     */
+    public int getLight(int x, int y, int z, boolean checkNeighbors);
+
+    /**
+     * Gets light level at vector, optionally checking neighbors.
+     *
+     * @param vector Coordinate vector
+     * @param checkNeighbors if should check neighbor blocks
+     * @return Light level (0-15)
+     */
+    public int getLight(ScriptVector vector, boolean checkNeighbors);
 }

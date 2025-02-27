@@ -1,6 +1,7 @@
 package mchorse.mappet.network.server.npc;
 
 import mchorse.mappet.Mappet;
+import mchorse.mappet.items.MappetItems;
 import mchorse.mappet.network.common.npc.PacketNpcTool;
 import mchorse.mclib.network.ServerMessageHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,7 +15,7 @@ public class ServerHandlerNpcTool extends ServerMessageHandler<PacketNpcTool>
     {
         ItemStack stack = player.getHeldItemMainhand();
 
-        if (stack.getItem() == Mappet.npcTool)
+        if (stack.getItem() == MappetItems.npcTool)
         {
             NBTTagCompound tag = stack.getTagCompound();
 

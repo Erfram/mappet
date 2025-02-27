@@ -8,6 +8,7 @@ import mchorse.mappet.api.scripts.code.mappet.MappetUIBuilder;
 import mchorse.mappet.api.scripts.code.mappet.MappetUIContext;
 import mchorse.mappet.api.scripts.code.nbt.ScriptNBTCompound;
 import mchorse.mappet.api.scripts.user.data.ScriptVector;
+import mchorse.mappet.api.scripts.user.entities.IScriptEntity;
 import mchorse.mappet.api.scripts.user.entities.IScriptPlayer;
 import mchorse.mappet.api.scripts.user.items.IScriptInventory;
 import mchorse.mappet.api.scripts.user.items.IScriptItemStack;
@@ -32,6 +33,9 @@ import mchorse.metamorph.api.morphs.AbstractMorph;
 import mchorse.metamorph.capabilities.morphing.IMorphing;
 import mchorse.metamorph.capabilities.morphing.Morphing;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketAnimation;
@@ -596,6 +600,43 @@ public class ScriptPlayer extends ScriptEntity<EntityPlayerMP> implements IScrip
         {
             this.playApertureScene("", false);
         }
+    }
+
+    @Override
+    public void setSpectating(IScriptEntity entity) {
+        if (this.entity.interactionManager.getGameType().getID() == 3) {
+            this.entity.setSpectatingEntity(entity.getMinecraftEntity());
+        }
+    }
+
+    @Override
+    public boolean isSleeping() {
+        return this.entity.isPlayerSleeping();
+    }
+
+    @Override
+    public int getPing() {
+        return this.entity.ping;
+    }
+
+    @Override
+    public boolean isEat() {
+        EntityPlayerMP player = this.entity;
+        ItemStack item = player.getActiveItemStack();
+
+        return player.getItemInUseCount() > 0 && item.getItem() instanceof ItemFood;
+    }
+
+    @Override
+    public boolean isDrink() {
+        ItemStack item = this.entity.getActiveItemStack();
+
+        return this.entity.getItemInUseCount() > 0 && item.getItem() instanceof ItemPotion;
+    }
+
+    @Override
+    public void disconnect(String reason) {
+        this.entity.connection.disconnect(new TextComponentString(reason));
     }
 
     @Optional.Method(modid = "aperture")
