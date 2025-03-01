@@ -34,11 +34,7 @@ import mchorse.metamorph.capabilities.morphing.Morphing;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketAnimation;
-import net.minecraft.network.play.server.SPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketEntityVelocity;
-import net.minecraft.network.play.server.SPacketHeldItemChange;
-import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -247,21 +243,15 @@ public class ScriptPlayer extends ScriptEntity<EntityPlayerMP> implements IScrip
     }
 
     @Override
-    public int getHotbarIndex()
+    public int getSlot()
     {
         return this.entity.inventory.currentItem;
     }
 
     @Override
-    public void setHotbarIndex(int slot)
-    {
-        if (slot < 0 || slot >= 9)
-        {
-            return;
-        }
-
+    public void setSlot(int slot) {
+        if (slot < 0 || slot >= 9) return;
         this.entity.inventory.currentItem = slot;
-
         this.entity.connection.sendPacket(new SPacketHeldItemChange(slot));
     }
 

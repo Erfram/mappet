@@ -317,23 +317,23 @@ public interface IScriptPlayer extends IScriptEntity
     public void resetCooldown(IScriptItemStack item);
 
     /**
-     * Get the inventory index of main item. Useful for e.g. main hand's cooldown methods.
+     * Get the inventory slot of main item.
      *
      * <pre>{@code
      *    function main(c)
      *    {
      *        var player = c.getSubject();
      *
-     *        player.setCooldown(player.getHotbarIndex(), 100); //tip: 40 is the offhand slot
+     *        player.setCooldown(player.getSlot(), 100); //tip: 40 is the offhand slot
      *    }
      * }</pre>
      */
-    public int getHotbarIndex();
+    public int getSlot();
 
     /**
-     * Set forcefully player's current hotbar inventory index. Acceptable values are <code>0</code> - <code>8</code>.
+     * Set forcefully player's current slot. Acceptable values are <code>0</code> - <code>8</code>.
      */
-    public void setHotbarIndex(int slot);
+    public void setSlot(int slot);
 
     /**
      * Send a message to this player.

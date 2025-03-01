@@ -202,13 +202,13 @@ public final class Mappet
         nodePulseBackgroundColor = builder.category("gui").getInt("pulse_background_color", 0x000000).color();
         nodePulseBackgroundMcLibPrimary = builder.getBoolean("pulse_background_mclib", false);
         nodeThickness = builder.getInt("node_thickness", 3, 0, 20);
-        questsPreviewRewards = builder.getBoolean("quest_preview_rewards", true);
+        questsPreviewRewards = builder.getBoolean("quest_preview_rewards", false);
         journalButtonX = builder.getInt("journal_button_x", 0, 0, 300);
         journalButtonY = builder.getInt("journal_button_y", 0, 0, 300);
         builder.getCategory().markClientSide();
 
         builder.category("script_editor").register(scriptEditorSyntaxStyle = new ValueSyntaxStyle("syntax_style"));
-        scriptEditorSounds = builder.getBoolean("sounds", true);
+        scriptEditorSounds = builder.getBoolean("sounds", false);
         scriptUIDebug = builder.getBoolean("ui_debug", false);
         scriptDocsNewStructure = builder.getBoolean("docs_new_structure", false);
         builder.getCategory().markClientSide();

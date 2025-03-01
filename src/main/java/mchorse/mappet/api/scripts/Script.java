@@ -83,6 +83,7 @@ public class Script extends AbstractData
             }
 
             this.engine.put("mappet", new ScriptFactory());
+            this.engine.put("mp", new ScriptFactory());
             evalEngineCode(isKotlin, uniqueImports, finalCode);
         }
     }

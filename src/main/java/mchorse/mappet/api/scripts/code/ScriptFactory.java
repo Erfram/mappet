@@ -2,7 +2,6 @@ package mchorse.mappet.api.scripts.code;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import mchorse.mappet.Mappet;
-import mchorse.mappet.api.conditions.Checker;
 import mchorse.mappet.api.scripts.code.blocks.ScriptBlockState;
 import mchorse.mappet.api.scripts.code.entities.ScriptEntity;
 import mchorse.mappet.api.scripts.code.items.ScriptItemStack;
@@ -18,10 +17,13 @@ import mchorse.mappet.api.scripts.user.nbt.INBTCompound;
 import mchorse.mappet.api.scripts.user.nbt.INBTList;
 import mchorse.mappet.api.ui.UI;
 import mchorse.mappet.api.utils.logs.MappetLogger;
+import mchorse.mclib.utils.Color;
+import mchorse.mclib.utils.ColorUtils;
 import mchorse.metamorph.api.MorphManager;
 import mchorse.metamorph.api.morphs.AbstractMorph;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -38,6 +40,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector4d;
@@ -81,25 +84,32 @@ public class ScriptFactory implements IScriptFactory
     }
 
     @Override
-    public IScriptBlockState createBlockState(String blockId, int meta)
-    {
+    public IScriptBlockState createBlockState(String blockId, int meta) {
         ResourceLocation location = new ResourceLocation(blockId);
         Block block = ForgeRegistries.BLOCKS.getValue(location);
 
-        if (block != null)
-        {
+        if (block != null) {
             IBlockState state = block.getStateFromMeta(meta);
-
             return ScriptBlockState.create(state);
         }
-
         return ScriptBlockState.create(null);
     }
 
     @Override
-    public IScriptBlockState createBlockState(String blockId)
-    {
+    public IScriptBlockState createBlockState(int registryId, int meta) {
+        Block block = Block.getBlockById(registryId);
+        IBlockState state = block.getStateFromMeta(meta);
+        return ScriptBlockState.create(state);
+    }
+
+    @Override
+    public IScriptBlockState createBlockState(String blockId) {
         return createBlockState(blockId, 0);
+    }
+
+    @Override
+    public IScriptBlockState createBlockState(int registryId) {
+        return createBlockState(registryId, 0);
     }
 
     @Override
@@ -119,6 +129,38 @@ public class ScriptFactory implements IScriptFactory
         }
 
         return new ScriptNBTCompound(tag);
+    }
+
+    @Override
+    public int parseColor(String hex) {
+        return ColorUtils.parseColor(hex, 0xffffffff);
+    }
+
+    @Override
+    public String parseColor(int color) {
+        Color converted = new Color(color);
+        return converted.stringify();
+    }
+
+    @Override
+    public String parseColor(int color, boolean alpha) {
+        Color converted = new Color(color);
+        return converted.stringify(alpha);
+    }
+
+    @Override
+    public String parseKey(int code) {
+        return Keyboard.getKeyName(code);
+    }
+
+    @Override
+    public int parseKey(String name) {
+        return Keyboard.getKeyIndex(name.replace(" ", "_").toUpperCase());
+    }
+
+    @Override
+    public ScriptServer getIntegratedServer() {
+        return new ScriptServer(Minecraft.getMinecraft().getIntegratedServer());
     }
 
     @Override
@@ -424,11 +466,9 @@ public class ScriptFactory implements IScriptFactory
     public String style(String... styles)
     {
         StringBuilder builder = new StringBuilder();
-
         for (String style : styles)
         {
             String code = formattingCodes.get(style);
-
             if (code != null)
             {
                 builder.append('\u00A7');

@@ -28,7 +28,18 @@ public interface IScriptBlockState
      * Get Minecraft block state instance. <b>BEWARE:</b> you need to know the MCP
      * mappings in order to directly call methods on this instance!
      */
-    public IBlockState getMinecraftBlockState();
+    IBlockState getMinecraftBlockState();
+
+    /**
+     * Get block's registry ID, may be useful in world edit.
+     *
+     * <pre>{@code
+     *    var block = c.getWorld().getBlock(214, 3, 511);
+     *
+     *    c.getSubject().send("Block id at (214, 3, 511) is " + block.getRegistryId());
+     * }</pre>
+     */
+    int getRegistryId();
 
     /**
      * Get block's ID like <code>minecraft:stone</code>.
@@ -36,10 +47,10 @@ public interface IScriptBlockState
      * <pre>{@code
      *    var block = c.getWorld().getBlock(214, 3, 511);
      *
-     *    c.getSubject().send("Block at (214, 3, 511) is " + block.getBlockId());
+     *    c.getSubject().send("Block name at (214, 3, 511) is " + block.getBlockId());
      * }</pre>
      */
-    public String getBlockId();
+    String getBlockId();
 
     /**
      * Get meta value of this state (it will always be between 0 and 15).
@@ -51,7 +62,7 @@ public interface IScriptBlockState
      *    c.getSubject().send("Andesite's meta is " + andesite.getMeta());
      * }</pre>
      */
-    public int getMeta();
+    int getMeta();
 
     /**
      * Check whether this block state is same as given block state.
@@ -65,7 +76,7 @@ public interface IScriptBlockState
      *    }
      * }</pre>
      */
-    public boolean isSame(IScriptBlockState state);
+    boolean isSame(IScriptBlockState state);
 
     /**
      * Check whether given block state has the same block, but
@@ -79,23 +90,23 @@ public interface IScriptBlockState
      *    c.getSubject().send(stone.isSameBlock(andesite));
      * }</pre>
      */
-    public boolean isSameBlock(IScriptBlockState state);
+    boolean isSameBlock(IScriptBlockState state);
 
     /**
      * Check whether given block state is occupying a full block entirely,
      * rather than being see through or not full (1, 1, 1) block space.
      */
-    public boolean isOpaque();
+    boolean isOpaque();
 
     /**
      * Check whether given block state has collision boxes. Minecraft's block
      * state code requires a world instance and block coordinates to be passed,
      * because collision box can be different depending on the place in the world.
      */
-    public boolean hasCollision(IScriptWorld world, int x, int y, int z);
+    boolean hasCollision(IScriptWorld world, int x, int y, int z);
 
     /**
      * Check whether given block state is air.
      */
-    public boolean isAir();
+    boolean isAir();
 }

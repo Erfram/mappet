@@ -55,6 +55,7 @@ public class ScriptManager extends BaseManager<Script>
 
             engine.put("____manager____", this);
             engine.put("mappet", new ScriptFactory());
+            engine.put("mp", new ScriptFactory());
 
             ScriptEvent event = new ScriptEvent(this.prepareContext(key), "", "");
             engine.put("c", event);
@@ -79,6 +80,7 @@ public class ScriptManager extends BaseManager<Script>
     {
         ScriptEvent event = new ScriptEvent(context, "", "");
         engine.put("mappet", new ScriptFactory());
+        engine.put("mp", new ScriptFactory());
         engine.put("c", event);
 
         return engine.eval(code);

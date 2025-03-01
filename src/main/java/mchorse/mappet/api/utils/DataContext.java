@@ -70,6 +70,7 @@ public class DataContext
     public DataContext(MinecraftServer server)
     {
         this.server = server;
+        this.world = server.getEntityWorld();
 
         this.setup();
     }
@@ -95,14 +96,9 @@ public class DataContext
         EntityNpc npc = this.getNpc();
 
         this.set("subject", this.subject == null ? "" : this.subject.getCachedUniqueIdString());
-        this.set("subject_name", this.subject == null ? "" : this.subject.getName());
         this.set("object", this.object == null ? "" : this.object.getCachedUniqueIdString());
-        this.set("object_name", this.object == null ? "" : this.object.getName());
         this.set("player", player == null ? "" : player.getCachedUniqueIdString());
-        this.set("player_name", player == null ? "" : player.getName());
         this.set("npc", npc == null ? "" : npc.getCachedUniqueIdString());
-        this.set("npc_name", npc == null ? "" : npc.getName());
-
     }
 
     public DataContext set(String key, double value)

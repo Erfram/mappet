@@ -25,7 +25,7 @@ public interface IScriptServer
      * Get Minecraft server instance. <b>BEWARE:</b> you need to know the MCP
      * mappings in order to directly call methods on this instance!
      */
-    public MinecraftServer getMinecraftServer();
+    MinecraftServer getMinecraftServer();
 
     /**
      * Get world at dimension ID.
@@ -36,7 +36,18 @@ public interface IScriptServer
      *    // Do something with the world...
      * }</pre>
      */
-    public IScriptWorld getWorld(int dimension);
+    IScriptWorld getWorld(int dimension);
+
+    /**
+     * Get standart world (overworld).
+     *
+     * <pre>{@code
+     *    var overworld = c.getServer().getWorld();
+     *
+     *    // Do something with the world...
+     * }</pre>
+     */
+    IScriptWorld getWorld();
 
     /**
      * Get all entities matching giving target selector.
@@ -51,7 +62,7 @@ public interface IScriptServer
      *    }
      * }</pre>
      */
-    public List<IScriptEntity> getEntities(String targetSelector);
+    List<IScriptEntity> getEntities(String targetSelector);
 
     /**
      * Get an entity by its UUID.
@@ -63,7 +74,7 @@ public interface IScriptServer
      *    print(entity.getUniqueId() === uuid); // true
      * }</pre>
      */
-    public IScriptEntity getEntity(String uuid);
+    IScriptEntity getEntity(String uuid);
 
     /**
      * Get all players on the server.
@@ -78,7 +89,7 @@ public interface IScriptServer
      *    }
      * }</pre>
      */
-    public List<IScriptPlayer> getAllPlayers();
+    List<IScriptPlayer> getAllPlayers();
 
     /**
      * Get a player by their username.
@@ -94,7 +105,7 @@ public interface IScriptServer
      *    }
      * }</pre>
      */
-    public IScriptPlayer getPlayer(String username);
+    IScriptPlayer getPlayer(String username);
 
     /**
      * Check if a player is online.
@@ -106,7 +117,7 @@ public interface IScriptServer
      *    }
      * }</pre>
      */
-    public default boolean isOnline(String username)
+    default boolean isOnline(String username)
     {
         return this.getPlayer(username) != null;
     }
@@ -123,7 +134,7 @@ public interface IScriptServer
      *    }
      * }</pre>
      */
-    public IMappetStates getStates();
+    IMappetStates getStates();
 
     /**
      * Check if an entity with given UUID exists.
@@ -138,7 +149,7 @@ public interface IScriptServer
      * @param uuid The UUID of the entity to check for existence.
      * @return true if an entity with the specified UUID exists, false otherwise.
      */
-    public boolean entityExists(String uuid);
+    boolean entityExists(String uuid);
 
     /**
      * Execute a script with a given script name and the default function "main".
@@ -149,7 +160,7 @@ public interface IScriptServer
      *
      * @param scriptName The name of the script to execute.
      */
-    public void executeScript(String scriptName);
+    void executeScript(String scriptName);
 
     /**
      * Execute a script with a given script name and a specified function.
@@ -161,7 +172,7 @@ public interface IScriptServer
      * @param scriptName The name of the script to execute.
      * @param function The name of the function within the script to execute.
      */
-    public void executeScript(String scriptName, String function);
+    void executeScript(String scriptName, String function);
 
     /**
      * Execute a script with a given script name, a specified function and arguments.
