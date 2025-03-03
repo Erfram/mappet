@@ -1226,7 +1226,7 @@ public class EventHandler
             {
                 ScriptPlayer player = new ScriptPlayer((EntityPlayerMP) event.getEntity());
 
-                context.getValues().put("slot", player.getHotbarIndex());
+                context.getValues().put("slot", player.getSlot());
             }
             else
             {

@@ -2,6 +2,7 @@ package mchorse.mappet.api.scripts.code.blocks;
 
 import mchorse.mappet.api.scripts.user.IScriptWorld;
 import mchorse.mappet.api.scripts.user.blocks.IScriptBlockState;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,11 @@ public class ScriptBlockState implements IScriptBlockState
     public IBlockState getMinecraftBlockState()
     {
         return this.state;
+    }
+
+    @Override
+    public int getRegistryId() {
+        return Block.getIdFromBlock(this.state.getBlock());
     }
 
     @Override

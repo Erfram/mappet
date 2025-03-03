@@ -1,5 +1,8 @@
 package mchorse.mappet.api.scripts.user;
 
+import mchorse.mappet.api.scripts.code.ScriptEvent;
+import mchorse.mappet.api.scripts.code.ScriptServer;
+import mchorse.mappet.api.scripts.code.entities.ScriptEntity;
 import mchorse.mappet.api.scripts.user.blocks.IScriptBlockState;
 import mchorse.mappet.api.scripts.user.data.ScriptBox;
 import mchorse.mappet.api.scripts.user.data.ScriptVector;
@@ -50,8 +53,20 @@ public interface IScriptFactory
      *    c.send(fence.getBlockId() + " " + fence.getMeta());
      * }</pre>
      */
-    public IScriptBlockState createBlockState(String blockId, int meta);
+    IScriptBlockState createBlockState(String blockId, int meta);
 
+    /**
+     * Get a block state that can be used to place and compare blocks in
+     * the {@link IScriptWorld}.
+     *
+     * <pre>{@code
+     *    var fence = mappet.createBlockState(199, 0);
+     *
+     *    // minecraft:spruce_fence 0
+     *    c.send(fence.getBlockId() + " " + fence.getMeta());
+     * }</pre>
+     */
+    IScriptBlockState createBlockState(int registryId, int meta);
 
     /**
      * Create a block state that can with the default meta value.
@@ -64,6 +79,18 @@ public interface IScriptFactory
      * }</pre>
      */
     IScriptBlockState createBlockState(String blockId);
+
+    /**
+     * Create a block state that can with the default meta value.
+     *
+     * <pre>{@code
+     * var fence = mappet.createBlockState(199);
+     *
+     * // minecraft:spruce_fence 0
+     * c.send(fence.getBlockId() + " " + fence.getMeta());
+     * }</pre>
+     */
+    IScriptBlockState createBlockState(int registryId);
 
     /**
      * Create an empty NBT compound.
@@ -80,7 +107,7 @@ public interface IScriptFactory
      *    c.send(item.serialize());
      * }</pre>
      */
-    public default INBTCompound createCompound()
+    default INBTCompound createCompound()
     {
         return this.createCompound(null);
     }
@@ -97,7 +124,37 @@ public interface IScriptFactory
      *    c.send(item.serialize());
      * }</pre>
      */
-    public INBTCompound createCompound(String nbt);
+    INBTCompound createCompound(String nbt);
+
+    /**
+     * Returns the integer color from hex color (Maybe need for NBT)
+     */
+    int parseColor(String hex);
+
+    /**
+     * Returns the hex color from integer color
+     */
+    String parseColor(int color);
+
+    /**
+     * Returns the hex color from integer color
+     */
+    String parseColor(int color, boolean alpha);
+
+    /**
+     * Returns the key name from key code
+     */
+    String parseKey(int code);
+
+    /**
+     * Returns the key code from key name
+     */
+    int parseKey(String name);
+
+    /**
+     * Returns an integrated server, needed if you don't have a context.
+     */
+    ScriptServer getIntegratedServer();
 
     /**
      * Turn a JS object into an NBT compound.

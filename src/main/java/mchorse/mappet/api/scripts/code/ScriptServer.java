@@ -44,6 +44,12 @@ public class ScriptServer implements IScriptServer
     }
 
     @Override
+    public IScriptWorld getWorld()
+    {
+        return new ScriptWorld(this.server.getEntityWorld());
+    }
+
+    @Override
     public List<IScriptEntity> getEntities(String targetSelector)
     {
         List<IScriptEntity> entities = new ArrayList<IScriptEntity>();
